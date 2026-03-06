@@ -7,11 +7,14 @@ import FoundersSection from "@/components/FoundersSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import CartDrawer from "@/components/CartDrawer";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <CartDrawer />
       <HeroSection />
       <TrustPanel />
       <FeaturedCollections />
@@ -20,6 +23,7 @@ const Index = () => {
       <NewsletterSection />
       <Footer />
       <WhatsAppButton />
+      <ScrollToTop />
     </div>
   );
 };
