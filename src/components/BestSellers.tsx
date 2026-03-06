@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ShoppingBag, Star } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
 import collectionSK from "@/assets/collection-shalwar-kameez.jpg";
 import collectionWC from "@/assets/collection-waistcoats.jpg";
 import collection3P from "@/assets/collection-3piece.jpg";
@@ -13,6 +14,7 @@ const products = [
 ];
 
 const BestSellers = () => {
+  const { addItem } = useCart();
   return (
     <section className="py-20 lg:py-28 section-padding max-w-7xl mx-auto">
       <motion.div
@@ -54,6 +56,7 @@ const BestSellers = () => {
                 <motion.button
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileHover={{ scale: 1.05 }}
+                  onClick={() => addItem({ id: product.name, name: product.name, price: product.price, image: product.image })}
                   className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-primary text-primary-foreground px-5 py-2.5 rounded-sm text-xs tracking-widest uppercase font-body font-semibold flex items-center gap-2"
                 >
                   <ShoppingBag size={14} /> Add to Cart
