@@ -54,21 +54,26 @@ const AIChatAssistant = () => {
   return (
     <>
       {/* Toggle Button */}
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 2.5, type: "spring" }}
-        whileHover={{ scale: 1.1 }}
-        className="fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full bg-gold-gradient flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow overflow-hidden"
-        aria-label="Customer Support"
-      >
-        {isOpen ? (
-          <X size={24} className="text-primary-foreground" />
-        ) : (
-          <Headset size={26} className="text-primary-foreground" />
+      <div className="fixed bottom-24 right-6 z-50">
+        <motion.button
+          onClick={() => setIsOpen(!isOpen)}
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 2.5, type: "spring" }}
+          whileHover={{ scale: 1.1 }}
+          className="w-14 h-14 rounded-full bg-gold-gradient flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow"
+          aria-label="Customer Support"
+        >
+          {isOpen ? (
+            <X size={24} className="text-primary-foreground" />
+          ) : (
+            <Headset size={26} className="text-primary-foreground" />
+          )}
+        </motion.button>
+        {!isOpen && (
+          <span className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-background animate-pulse" />
         )}
-      </motion.button>
+      </div>
 
       {/* Chat Window */}
       <AnimatePresence>
