@@ -171,6 +171,9 @@ const Checkout = () => {
                     <div className="flex-1 min-w-0">
                       <p className="font-body text-xs font-semibold truncate">{item.name}</p>
                       <p className="text-xs text-muted-foreground font-body">Qty: {item.quantity}</p>
+                      {item.measurementLabel && (
+                        <p className="text-[10px] text-muted-foreground font-body">📐 {item.measurementLabel}</p>
+                      )}
                     </div>
                     <p className="font-body text-xs font-semibold">{item.price}</p>
                   </div>

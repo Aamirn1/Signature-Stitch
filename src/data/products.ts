@@ -14,7 +14,6 @@ export interface Product {
   description: string;
   rating: number;
   tag?: string;
-  sizes: string[];
   fabric: string;
   inStock: boolean;
 }
