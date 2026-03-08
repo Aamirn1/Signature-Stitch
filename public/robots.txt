@@ -12,3 +12,10 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Disallow: /auth
+Disallow: /profile
+Disallow: /partner
+Disallow: /checkout
+
+Sitemap: https://signaturestitch.pk/sitemap.xml

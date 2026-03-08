@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bot, X, Send, Loader2 } from "lucide-react";
+import { X, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import supportAgent from "@/assets/support-agent.png";
 
 interface Message {
   role: "user" | "assistant";
@@ -59,10 +60,14 @@ const AIChatAssistant = () => {
         animate={{ scale: 1 }}
         transition={{ delay: 2.5, type: "spring" }}
         whileHover={{ scale: 1.1 }}
-        className="fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full bg-gold-gradient flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow"
-        aria-label="AI Support"
+        className="fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full bg-gold-gradient flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow overflow-hidden"
+        aria-label="Customer Support"
       >
-        {isOpen ? <X size={24} className="text-primary-foreground" /> : <Bot size={24} className="text-primary-foreground" />}
+        {isOpen ? (
+          <X size={24} className="text-primary-foreground" />
+        ) : (
+          <img src={supportAgent} alt="Customer Support" className="w-full h-full object-cover" />
+        )}
       </motion.button>
 
       {/* Chat Window */}
@@ -77,10 +82,10 @@ const AIChatAssistant = () => {
           >
             {/* Header */}
             <div className="bg-gold-gradient px-4 py-3 flex items-center gap-3">
-              <Bot size={22} className="text-primary-foreground" />
+              <img src={supportAgent} alt="Support" className="w-9 h-9 rounded-full object-cover border-2 border-primary-foreground/30" />
               <div>
-                <p className="text-primary-foreground font-heading text-sm font-bold">AI Assistant</p>
-                <p className="text-primary-foreground/70 text-[10px] font-body">Signature Stitch Support</p>
+                <p className="text-primary-foreground font-heading text-sm font-bold">Customer Support</p>
+                <p className="text-primary-foreground/70 text-[10px] font-body">Signature Stitch Help Desk</p>
               </div>
             </div>
 

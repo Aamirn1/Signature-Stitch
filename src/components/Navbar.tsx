@@ -132,11 +132,6 @@ const Navbar = () => {
                     <ChevronRight size={16} className="text-muted-foreground" />
                   </Link>
                 </motion.div>
-                <div className="border-t border-border mt-4 pt-4 px-4">
-                  <p className="text-xs text-muted-foreground font-body tracking-wider">
-                    WhatsApp: +92 320 5719979
-                  </p>
-                </div>
               </nav>
             </motion.div>
           )}
