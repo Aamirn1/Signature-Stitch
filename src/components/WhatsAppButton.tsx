@@ -7,12 +7,25 @@ const WhatsAppButton = () => {
       href="https://wa.me/923205719979"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all duration-300 pulse-ring"
       style={{
+        position: 'fixed',
+        bottom: '1.5rem',
+        right: '1.5rem',
+        zIndex: 9999,
+        width: '3.5rem',
+        height: '3.5rem',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: 'hsl(142, 70%, 45%)',
         color: 'white',
+        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+        transition: 'transform 0.3s',
       }}
       aria-label="Chat on WhatsApp"
+      onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
+      onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
     >
       <MessageCircle size={26} />
     </a>,
