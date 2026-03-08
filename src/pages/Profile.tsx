@@ -328,7 +328,7 @@ const Profile = () => {
                     <Input
                       type="number"
                       step="0.5"
-                      value={editingMeasurement[key as keyof typeof editingMeasurement] ?? ""}
+                      value={(editingMeasurement[key as keyof typeof editingMeasurement] as number | null) ?? ""}
                       onChange={(e) => setEditingMeasurement({
                         ...editingMeasurement,
                         [key]: e.target.value ? parseFloat(e.target.value) : null,
