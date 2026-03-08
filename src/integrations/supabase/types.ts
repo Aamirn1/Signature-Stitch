@@ -74,6 +74,146 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_applications: {
+        Row: {
+          business_name: string
+          city: string
+          created_at: string
+          id: string
+          phone: string
+          reason: string | null
+          reviewed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          business_name: string
+          city: string
+          created_at?: string
+          id?: string
+          phone: string
+          reason?: string | null
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          business_name?: string
+          city?: string
+          created_at?: string
+          id?: string
+          phone?: string
+          reason?: string | null
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      partner_orders: {
+        Row: {
+          base_price: number
+          created_at: string
+          customer_address: string | null
+          customer_city: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          final_price: number | null
+          id: string
+          markup_amount: number
+          measurement_id: string | null
+          partner_id: string
+          product_id: string
+          product_name: string
+          quantity: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          base_price: number
+          created_at?: string
+          customer_address?: string | null
+          customer_city?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          final_price?: number | null
+          id?: string
+          markup_amount?: number
+          measurement_id?: string | null
+          partner_id: string
+          product_id: string
+          product_name: string
+          quantity?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          base_price?: number
+          created_at?: string
+          customer_address?: string | null
+          customer_city?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          final_price?: number | null
+          id?: string
+          markup_amount?: number
+          measurement_id?: string | null
+          partner_id?: string
+          product_id?: string
+          product_name?: string
+          quantity?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_orders_measurement_id_fkey"
+            columns: ["measurement_id"]
+            isOneToOne: false
+            referencedRelation: "measurements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_payouts: {
+        Row: {
+          account_number: string
+          account_title: string
+          amount: number
+          created_at: string
+          id: string
+          notes: string | null
+          partner_id: string
+          payment_method: string
+          processed_at: string | null
+          status: string
+        }
+        Insert: {
+          account_number: string
+          account_title: string
+          amount: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          partner_id: string
+          payment_method?: string
+          processed_at?: string | null
+          status?: string
+        }
+        Update: {
+          account_number?: string
+          account_title?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          partner_id?: string
+          payment_method?: string
+          processed_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

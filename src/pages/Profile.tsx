@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Ruler, Plus, Trash2, Camera, Check, LogOut, Star } from "lucide-react";
+import { User, Ruler, Plus, Trash2, Camera, Check, LogOut, Star, Handshake, ArrowRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -65,6 +65,11 @@ const Profile = () => {
   const [editingMeasurement, setEditingMeasurement] = useState<Omit<Measurement, "id"> & { id?: string } | null>(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [partnerStatus, setPartnerStatus] = useState<string | null>(null);
+
+  // Partner application form
+  const [showPartnerForm, setShowPartnerForm] = useState(false);
+  const [partnerForm, setPartnerForm] = useState({ business_name: "", phone: "", city: "", reason: "" });
 
   useEffect(() => {
     if (!loading && !user) {
@@ -76,6 +81,7 @@ const Profile = () => {
     if (user) {
       fetchProfile();
       fetchMeasurements();
+      fetchPartnerStatus();
     }
   }, [user]);
 
@@ -167,6 +173,34 @@ const Profile = () => {
     setEditingMeasurement({ ...editingMeasurement, measurement_photo_url: publicUrl });
     setUploading(false);
     toast.success("Photo uploaded");
+  };
+
+  const fetchPartnerStatus = async () => {
+    const { data } = await supabase.from("partner_applications").select("status").eq("user_id", user!.id).maybeSingle();
+    setPartnerStatus(data?.status ?? null);
+  };
+
+  const applyAsPartner = async () => {
+    if (!partnerForm.business_name || !partnerForm.phone || !partnerForm.city) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.from("partner_applications").insert({
+      user_id: user!.id,
+      business_name: partnerForm.business_name,
+      phone: partnerForm.phone,
+      city: partnerForm.city,
+      reason: partnerForm.reason,
+    });
+    setSaving(false);
+    if (error) {
+      toast.error("Application failed. You may have already applied.");
+      return;
+    }
+    toast.success("Partner application submitted!");
+    setShowPartnerForm(false);
+    setPartnerStatus("pending");
   };
 
   const handleSignOut = async () => {
@@ -394,6 +428,83 @@ const Profile = () => {
                 </Button>
               </div>
             </motion.div>
+          )}
+        </motion.div>
+
+        {/* Partner Program Section */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Handshake size={20} className="text-primary" />
+            <h2 className="font-heading text-xl font-semibold">Reseller Program</h2>
+          </div>
+
+          {partnerStatus === "approved" ? (
+            <div className="bg-card border border-primary/30 rounded-xl p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Check size={16} className="text-green-400" />
+                <p className="font-body text-sm font-semibold text-green-400">You're an approved partner!</p>
+              </div>
+              <p className="text-xs text-muted-foreground font-body mb-4">
+                Access your dashboard to place orders, track commissions, and request payouts.
+              </p>
+              <Link to="/partner">
+                <Button className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90 gap-2">
+                  Open Partner Dashboard <ArrowRight size={14} />
+                </Button>
+              </Link>
+            </div>
+          ) : partnerStatus === "pending" ? (
+            <div className="bg-card border border-yellow-500/20 rounded-xl p-6">
+              <p className="font-body text-sm font-semibold text-yellow-400 mb-1">Application Under Review</p>
+              <p className="text-xs text-muted-foreground font-body">
+                Your partner application is being reviewed. We'll notify you once it's approved.
+              </p>
+            </div>
+          ) : partnerStatus === "rejected" ? (
+            <div className="bg-card border border-destructive/20 rounded-xl p-6">
+              <p className="font-body text-sm font-semibold text-destructive mb-1">Application Not Approved</p>
+              <p className="text-xs text-muted-foreground font-body">
+                Unfortunately your application was not approved. Contact us on WhatsApp for details.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-card border border-border rounded-xl p-6">
+              <p className="font-body text-sm mb-2">
+                Become a Signature Stitch partner — sell our products at your own markup and earn commission!
+              </p>
+              <ul className="text-xs text-muted-foreground font-body space-y-1 mb-4">
+                <li>• Set your own profit margin on each product</li>
+                <li>• We handle stitching, quality, and delivery</li>
+                <li>• Track your earnings and request payouts via Easypaisa/JazzCash</li>
+              </ul>
+
+              {showPartnerForm ? (
+                <div className="space-y-3 mt-4 pt-4 border-t border-border">
+                  <Input value={partnerForm.business_name} onChange={(e) => setPartnerForm({ ...partnerForm, business_name: e.target.value })} placeholder="Business / Brand Name *" className="bg-secondary border-border font-body" />
+                  <div className="grid grid-cols-2 gap-3">
+                    <Input value={partnerForm.phone} onChange={(e) => setPartnerForm({ ...partnerForm, phone: e.target.value })} placeholder="Phone Number *" className="bg-secondary border-border font-body" />
+                    <Input value={partnerForm.city} onChange={(e) => setPartnerForm({ ...partnerForm, city: e.target.value })} placeholder="City *" className="bg-secondary border-border font-body" />
+                  </div>
+                  <textarea
+                    value={partnerForm.reason}
+                    onChange={(e) => setPartnerForm({ ...partnerForm, reason: e.target.value })}
+                    placeholder="Tell us about your business (optional)"
+                    rows={3}
+                    className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                  <div className="flex gap-3">
+                    <Button onClick={applyAsPartner} disabled={saving} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90">
+                      {saving ? "Submitting..." : "Submit Application"}
+                    </Button>
+                    <Button variant="outline" onClick={() => setShowPartnerForm(false)} className="font-body text-xs">Cancel</Button>
+                  </div>
+                </div>
+              ) : (
+                <Button onClick={() => setShowPartnerForm(true)} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90 gap-2">
+                  <Handshake size={14} /> Apply to Become a Partner
+                </Button>
+              )}
+            </div>
           )}
         </motion.div>
       </div>
