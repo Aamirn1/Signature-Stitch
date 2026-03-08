@@ -18,9 +18,9 @@ const FoundersSection = () => {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-14"
         >
-          <p className="text-sm tracking-[0.3em] uppercase text-primary font-body mb-3">The Visionaries</p>
+          <p className="text-sm tracking-[0.3em] uppercase text-foreground/70 font-body mb-3">The Visionaries</p>
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold">
-            Meet the <span className="text-gold-gradient">Founders</span>
+            Meet the <span className="text-foreground">Founders</span>
           </h2>
           <p className="text-muted-foreground font-body mt-4 max-w-xl mx-auto text-sm">
             Built with passion and a commitment to redefining Pakistani fashion — delivering quality you can see and feel.
@@ -50,7 +50,7 @@ const FoundersSection = () => {
                 />
               </motion.div>
               <h3 className="font-heading text-xl font-semibold mb-1">{founder.name}</h3>
-              <p className="text-primary text-sm font-body tracking-wider uppercase">{founder.role}</p>
+              <p className="text-foreground/70 text-sm font-body tracking-wider uppercase">{founder.role}</p>
               <p className="text-muted-foreground text-sm font-body mt-2 italic">{founder.tagline}</p>
             </motion.div>
           ))}

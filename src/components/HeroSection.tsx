@@ -36,7 +36,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <p className="text-sm sm:text-base tracking-[0.3em] uppercase text-primary font-body mb-4">
+          <p className="text-sm sm:text-base tracking-[0.3em] uppercase text-foreground/80 font-body mb-4">
             Premium Pakistani Fashion
           </p>
         </motion.div>
@@ -56,7 +56,7 @@ const HeroSection = () => {
               </motion.span>
             ))}
           </span>
-          <span className="block text-gold-gradient pb-3">
+          <span className="block text-foreground pb-3">
             <motion.span
               custom={words1.length}
               variants={wordVariants}
