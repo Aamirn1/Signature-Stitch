@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Category from "./pages/Category";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
+import PartnerDashboard from "./pages/PartnerDashboard";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import ReturnPolicy from "./pages/ReturnPolicy";
