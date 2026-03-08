@@ -7,6 +7,9 @@ import { AnimatePresence } from "framer-motion";
 import { CartProvider } from "@/hooks/useCart";
 import { AuthProvider } from "@/hooks/useAuth";
 import PageTransition from "@/components/PageTransition";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import ScrollToTop from "@/components/ScrollToTop";
+import AIChatAssistant from "@/components/AIChatAssistant";
 import { useEffect } from "react";
 import Index from "./pages/Index";
 import Category from "./pages/Category";
@@ -59,6 +62,10 @@ const AnimatedRoutes = () => {
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </AnimatePresence>
+      {/* Floating buttons outside PageTransition to prevent transform breaking fixed positioning */}
+      <WhatsAppButton />
+      <AIChatAssistant />
+      <ScrollToTop />
     </>
   );
 };
