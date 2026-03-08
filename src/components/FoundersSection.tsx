@@ -3,8 +3,8 @@ import founderAamir from "@/assets/founder-aamir.webp";
 import founderSheryar from "@/assets/founder-sheryar.jpg";
 
 const founders = [
-  { name: "Muhammad Aamir", role: "Co-Founder", image: founderAamir },
-  { name: "Sheryar Rajpoot", role: "Co-Founder", image: founderSheryar },
+  { name: "Muhammad Aamir", role: "Co-Founder", tagline: "Providing quality is our mission.", image: founderAamir },
+  { name: "Sheryar Rajpoot", role: "Co-Founder", tagline: "Crafting elegance in every stitch.", image: founderSheryar },
 ];
 
 const FoundersSection = () => {
@@ -51,6 +51,7 @@ const FoundersSection = () => {
               </motion.div>
               <h3 className="font-heading text-xl font-semibold mb-1">{founder.name}</h3>
               <p className="text-primary text-sm font-body tracking-wider uppercase">{founder.role}</p>
+              <p className="text-muted-foreground text-sm font-body mt-2 italic">{founder.tagline}</p>
             </motion.div>
           ))}
         </div>
