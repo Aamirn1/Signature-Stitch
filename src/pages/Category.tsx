@@ -32,8 +32,23 @@ const Category = () => {
       <CartDrawer />
 
       <div className="pt-20 lg:pt-24">
+        {/* Breadcrumb */}
+        <div className="section-padding max-w-7xl mx-auto pt-4 flex items-center gap-2 text-sm font-body">
+          <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
+          <span className="text-muted-foreground">/</span>
+          {category ? (
+            <>
+              <Link to="/shop" className="text-muted-foreground hover:text-primary transition-colors">Shop</Link>
+              <span className="text-muted-foreground">/</span>
+              <span className="text-foreground">{category.title}</span>
+            </>
+          ) : (
+            <span className="text-foreground">Shop</span>
+          )}
+        </div>
+
         {/* Header */}
-        <div className="section-padding max-w-7xl mx-auto py-8">
+        <div className="section-padding max-w-7xl mx-auto py-6">
           <p className="text-sm tracking-[0.3em] uppercase text-primary font-body mb-2">
             {category ? category.subtitle : "All Products"}
           </p>
