@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, ShoppingBag, User, Menu, X, ChevronRight } from "lucide-react";
-import logo from "@/assets/logo.png";
+import { Link } from "react-router-dom";
+import Logo from "@/components/Logo";
 import { useCart } from "@/hooks/useCart";
 
 const navLinks = [
-  { label: "Home", href: "#" },
-  { label: "Shop", href: "#collections" },
-  { label: "Collections", href: "#collections" },
-  { label: "About", href: "#founders" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "Shop", href: "/shop" },
+  { label: "Collections", href: "/#collections" },
+  { label: "About", href: "/#founders" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 const Navbar = () => {
@@ -26,21 +27,19 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto section-padding flex items-center justify-between h-16 lg:h-20">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-3">
-          <img src={logo} alt="Signature Stitch" className="h-12 lg:h-14 w-auto brightness-125 contrast-110" />
-        </a>
+        <Logo size="md" />
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.label}
-              href={link.href}
+              to={link.href}
               className="text-sm font-body tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors duration-300 relative group"
             >
               {link.label}
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-primary transition-all duration-300 group-hover:w-full" />
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -90,18 +89,21 @@ const Navbar = () => {
           >
             <nav className="flex flex-col py-6 section-padding gap-1">
               {navLinks.map((link, i) => (
-                <motion.a
+                <motion.div
                   key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="flex items-center justify-between py-3 px-4 rounded-lg text-sm font-body tracking-widest uppercase text-foreground hover:text-primary hover:bg-card transition-all duration-200"
                 >
-                  <span>{link.label}</span>
-                  <ChevronRight size={16} className="text-muted-foreground" />
-                </motion.a>
+                  <Link
+                    to={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-between py-3 px-4 rounded-lg text-sm font-body tracking-widest uppercase text-foreground hover:text-primary hover:bg-card transition-all duration-200"
+                  >
+                    <span>{link.label}</span>
+                    <ChevronRight size={16} className="text-muted-foreground" />
+                  </Link>
+                </motion.div>
               ))}
               <div className="border-t border-border mt-4 pt-4 px-4">
                 <p className="text-xs text-muted-foreground font-body tracking-wider">

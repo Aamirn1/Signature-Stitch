@@ -1,5 +1,6 @@
 import { Facebook, Instagram, Youtube } from "lucide-react";
-import logo from "@/assets/logo.png";
+import { Link } from "react-router-dom";
+import Logo from "@/components/Logo";
 
 const Footer = () => {
   return (
@@ -8,9 +9,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <img src={logo} alt="Signature Stitch" className="h-8 w-auto" />
-              <span className="font-heading text-base tracking-wider">SIGNATURE STITCH</span>
+            <div className="mb-4">
+              <Logo size="sm" />
             </div>
             <p className="text-muted-foreground text-xs font-body leading-relaxed">
               Pakistan's most trusted online clothing brand. Premium quality, exactly as you see it.
@@ -21,9 +21,14 @@ const Footer = () => {
           <div>
             <h4 className="font-heading text-sm font-semibold mb-4 text-primary">Quick Links</h4>
             <ul className="space-y-2">
-              {["Shop All", "New Arrivals", "Best Sellers", "Size Guide"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-xs text-muted-foreground hover:text-primary font-body transition-colors">{link}</a>
+              {[
+                { label: "Shop All", href: "/shop" },
+                { label: "New Arrivals", href: "/shop" },
+                { label: "Best Sellers", href: "/shop" },
+                { label: "Size Guide", href: "#" },
+              ].map((link) => (
+                <li key={link.label}>
+                  <Link to={link.href} className="text-xs text-muted-foreground hover:text-primary font-body transition-colors">{link.label}</Link>
                 </li>
               ))}
             </ul>

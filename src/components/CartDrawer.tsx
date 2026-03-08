@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
@@ -5,11 +6,17 @@ import { Button } from "@/components/ui/button";
 
 const CartDrawer = () => {
   const { items, isOpen, toggleCart, removeItem, addItem } = useCart();
+  const navigate = useNavigate();
 
   const total = items.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/[^0-9]/g, ""));
     return sum + price * item.quantity;
   }, 0);
+
+  const handleCheckout = () => {
+    toggleCart();
+    navigate("/checkout");
+  };
 
   return (
     <AnimatePresence>
@@ -83,8 +90,11 @@ const CartDrawer = () => {
                   <span className="text-muted-foreground">Subtotal</span>
                   <span className="font-semibold">PKR {total.toLocaleString()}</span>
                 </div>
-                <Button className="w-full bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-sm py-6 hover:opacity-90">
-                  Checkout via WhatsApp
+                <Button
+                  onClick={handleCheckout}
+                  className="w-full bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-sm py-6 hover:opacity-90"
+                >
+                  Proceed to Checkout
                 </Button>
               </div>
             )}
