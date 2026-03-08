@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingBag, Star, ChevronLeft, Minus, Plus, Truck, Shield, RotateCcw } from "lucide-react";
+import { ShoppingBag, Star, Minus, Plus, Truck, Shield, RotateCcw, ZoomIn, Ruler } from "lucide-react";
 import { getProductById } from "@/data/products";
 import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,9 @@ import CartDrawer from "@/components/CartDrawer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import AIChatAssistant from "@/components/AIChatAssistant";
 import ScrollToTop from "@/components/ScrollToTop";
+import RelatedProducts from "@/components/RelatedProducts";
+import SizeGuideModal from "@/components/SizeGuideModal";
+import ImageZoomModal from "@/components/ImageZoomModal";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +22,8 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(false);
 
   if (!product) {
     return (
@@ -55,19 +60,30 @@ const ProductDetail = () => {
           <span className="text-foreground">{product.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 pb-10">
           {/* Images */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="aspect-[3/4] overflow-hidden rounded-lg bg-card mb-4 product-glow">
+            <div
+              className="relative aspect-[3/4] overflow-hidden rounded-lg bg-card mb-4 product-glow cursor-zoom-in group"
+              onClick={() => setZoomOpen(true)}
+            >
               <img
                 src={product.images[selectedImage]}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
+              <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <ZoomIn size={16} className="text-foreground" />
+              </div>
+              {!product.inStock && (
+                <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                  <span className="font-heading text-lg font-bold text-foreground">Out of Stock</span>
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-3 gap-3">
               {product.images.map((img, i) => (
@@ -108,18 +124,34 @@ const ProductDetail = () => {
               <span className="text-sm text-muted-foreground font-body">{product.rating} Rating</span>
             </div>
 
-            <p className="text-gold-gradient font-heading text-3xl font-bold mb-6">{product.priceFormatted}</p>
+            <p className="text-gold-gradient font-heading text-3xl font-bold mb-2">{product.priceFormatted}</p>
+            <p className="text-xs text-muted-foreground font-body mb-6">25% advance required for COD orders</p>
 
-            <p className="text-muted-foreground font-body text-sm leading-relaxed mb-8">{product.description}</p>
+            <p className="text-muted-foreground font-body text-sm leading-relaxed mb-6">{product.description}</p>
 
-            <div className="mb-6">
-              <p className="text-xs font-body tracking-wider uppercase text-muted-foreground mb-2">Fabric</p>
-              <p className="font-body text-sm">{product.fabric}</p>
+            {/* Product details */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <p className="text-xs font-body tracking-wider uppercase text-muted-foreground mb-1">Fabric</p>
+                <p className="font-body text-sm">{product.fabric}</p>
+              </div>
+              <div>
+                <p className="text-xs font-body tracking-wider uppercase text-muted-foreground mb-1">Category</p>
+                <p className="font-body text-sm">{product.category}</p>
+              </div>
             </div>
 
             {/* Size Selection */}
-            <div className="mb-8">
-              <p className="text-xs font-body tracking-wider uppercase text-muted-foreground mb-3">Select Size</p>
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-body tracking-wider uppercase text-muted-foreground">Select Size</p>
+                <button
+                  onClick={() => setSizeGuideOpen(true)}
+                  className="flex items-center gap-1 text-xs text-primary font-body hover:underline"
+                >
+                  <Ruler size={12} /> Size Guide
+                </button>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {product.sizes.map((size) => (
                   <button
@@ -162,6 +194,7 @@ const ProductDetail = () => {
               <Button
                 onClick={handleAddToCart}
                 size="lg"
+                disabled={!product.inStock}
                 className="flex-1 bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-sm py-6 hover:opacity-90 flex items-center gap-2"
               >
                 <ShoppingBag size={18} /> Add to Cart
@@ -197,10 +230,21 @@ const ProductDetail = () => {
         </div>
       </div>
 
+      {/* Related Products */}
+      <RelatedProducts currentProductId={product.id} categorySlug={product.categorySlug} />
+
       <Footer />
       <WhatsAppButton />
       <AIChatAssistant />
       <ScrollToTop />
+      <SizeGuideModal isOpen={sizeGuideOpen} onClose={() => setSizeGuideOpen(false)} />
+      <ImageZoomModal
+        images={product.images}
+        selectedIndex={selectedImage}
+        isOpen={zoomOpen}
+        onClose={() => setZoomOpen(false)}
+        onNavigate={setSelectedImage}
+      />
     </div>
   );
 };
