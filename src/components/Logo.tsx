@@ -14,17 +14,15 @@ const Logo = ({ className = "", size = "md" }: LogoProps) => {
 
   return (
     <Link to="/" className={`flex items-center gap-1 group ${className}`}>
-      <span className={`font-heading font-bold tracking-wider text-gold-gradient ${sizeClasses[size]}`}>
-        <span className="relative inline-block">
-          {/* Crown on S */}
+      <span className={`font-heading font-bold tracking-wider ${sizeClasses[size]} logo-shimmer`}>
+        <span className="relative inline-block text-gold-gradient">
+          {/* Crown on first S */}
           <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[0.5em] rotate-[-15deg] opacity-90">👑</span>
           S
         </span>
-        ignature{" "}
-        <span className="relative inline-block">
-          S
-        </span>
-        titch
+        <span className="text-foreground">ignature </span>
+        <span className="text-gold-gradient">S</span>
+        <span className="text-foreground">titch</span>
       </span>
     </Link>
   );
