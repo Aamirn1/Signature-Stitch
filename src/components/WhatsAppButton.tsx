@@ -1,7 +1,8 @@
+import { createPortal } from "react-dom";
 import { MessageCircle } from "lucide-react";
 
 const WhatsAppButton = () => {
-  return (
+  return createPortal(
     <a
       href="https://wa.me/923205719979"
       target="_blank"
@@ -10,7 +11,8 @@ const WhatsAppButton = () => {
       aria-label="Chat on WhatsApp"
     >
       <MessageCircle size={26} />
-    </a>
+    </a>,
+    document.body
   );
 };
 
