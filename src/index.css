@@ -100,6 +100,32 @@
   .product-glow:hover {
     box-shadow: 0 0 20px 2px hsla(var(--gold), 0.25), 0 0 40px 4px hsla(var(--gold), 0.1);
   }
+
+  .logo-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-shimmer::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsla(var(--gold-light), 0.4) 50%,
+      transparent 100%
+    );
+    animation: shimmer-sweep 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer-sweep {
+    0% { left: -100%; }
+    50% { left: 150%; }
+    100% { left: 150%; }
+  }
 }
 
 /* Scrollbar styling */
