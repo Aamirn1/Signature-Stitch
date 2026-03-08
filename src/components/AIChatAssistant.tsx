@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, Loader2 } from "lucide-react";
+import { X, Send, Loader2, Headset } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import supportAgent from "@/assets/support-agent.png";
 
@@ -66,7 +66,7 @@ const AIChatAssistant = () => {
         {isOpen ? (
           <X size={24} className="text-primary-foreground" />
         ) : (
-          <img src={supportAgent} alt="Customer Support" className="w-full h-full object-cover" />
+          <Headset size={26} className="text-primary-foreground" />
         )}
       </motion.button>
 
