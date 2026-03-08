@@ -16,34 +16,37 @@ const Logo = ({ className = "", size = "md" }: LogoProps) => {
     <Link to="/" className={`flex items-center gap-1 group ${className}`}>
       <span className={`font-heading font-bold tracking-wider ${sizeClasses[size]} logo-shimmer text-gold-gradient`}>
         <span className="relative inline-block">
-          {/* SVG Crown on first S */}
+          {/* Crown on first S - rotated like reference */}
           <svg
-            className="absolute -top-[0.6em] left-1/2 -translate-x-1/2 rotate-[-15deg]"
-            width="0.7em"
-            height="0.7em"
+            className="absolute -top-[0.7em] left-[0.15em] -rotate-[18deg]"
+            width="0.65em"
+            height="0.65em"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="M2 18L4.5 7L8.5 12L12 4L15.5 12L19.5 7L22 18H2Z"
-              fill="url(#crownGold)"
-              stroke="hsl(38, 50%, 40%)"
+              d="M3 17L5.5 8L9 13L12 5L15 13L18.5 8L21 17H3Z"
+              fill="url(#crownGradient)"
+              stroke="hsl(38, 50%, 35%)"
               strokeWidth="0.5"
             />
+            {/* Crown jewels */}
+            <circle cx="12" cy="5" r="1" fill="url(#crownGradient)" />
+            <circle cx="9" cy="7.5" r="0.7" fill="url(#crownGradient)" />
+            <circle cx="15" cy="7.5" r="0.7" fill="url(#crownGradient)" />
             <defs>
-              <linearGradient id="crownGold" x1="2" y1="4" x2="22" y2="18" gradientUnits="userSpaceOnUse">
-                <stop stopColor="hsl(38, 70%, 70%)" />
-                <stop offset="0.5" stopColor="hsl(38, 60%, 55%)" />
-                <stop offset="1" stopColor="hsl(38, 50%, 40%)" />
+              <linearGradient id="crownGradient" x1="3" y1="5" x2="21" y2="17" gradientUnits="userSpaceOnUse">
+                <stop stopColor="hsl(38, 80%, 65%)" />
+                <stop offset="0.5" stopColor="hsl(38, 70%, 50%)" />
+                <stop offset="1" stopColor="hsl(38, 55%, 38%)" />
               </linearGradient>
             </defs>
           </svg>
           S
         </span>
         ignature{" "}
-        <span className="inline-block">S</span>
-        titch
+        Stitch
       </span>
     </Link>
   );
