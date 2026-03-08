@@ -7,21 +7,10 @@ const WhatsAppButton = () => {
       href="https://wa.me/923205719979"
       target="_blank"
       rel="noopener noreferrer"
+      className="fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all duration-300 pulse-ring"
       style={{
-        position: 'fixed',
-        bottom: '24px',
-        right: '24px',
-        zIndex: 99999,
-        width: '56px',
-        height: '56px',
-        borderRadius: '50%',
         backgroundColor: 'hsl(142, 70%, 45%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
         color: 'white',
-        textDecoration: 'none',
       }}
       aria-label="Chat on WhatsApp"
     >
