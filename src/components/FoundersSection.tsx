@@ -9,13 +9,13 @@ const founders = [
 
 const FoundersSection = () => {
   return (
-    <section id="founders" className="py-20 lg:py-28 section-padding bg-secondary">
-      <div className="max-w-5xl mx-auto">
+    <section id="founders" className="py-20 lg:py-28 section-padding bg-secondary ambient-glow">
+      <div className="max-w-5xl mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-14"
         >
           <p className="text-sm tracking-[0.3em] uppercase text-primary font-body mb-3">The Visionaries</p>
@@ -31,20 +31,24 @@ const FoundersSection = () => {
           {founders.map((founder, i) => (
             <motion.div
               key={founder.name}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 60 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.15 }}
+              transition={{ duration: 0.6, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
               className="text-center group"
             >
-              <div className="relative w-48 h-48 sm:w-56 sm:h-56 mx-auto mb-6 rounded-full overflow-hidden border-2 border-primary/30 group-hover:border-primary transition-colors duration-500">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="relative w-48 h-48 sm:w-56 sm:h-56 mx-auto mb-6 rounded-full overflow-hidden border-2 border-primary/30 group-hover:border-primary transition-colors duration-500 group-hover:shadow-[0_0_40px_hsl(var(--gold)/0.2)]"
+              >
                 <img
                   src={founder.image}
                   alt={founder.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   loading="lazy"
                 />
-              </div>
+              </motion.div>
               <h3 className="font-heading text-xl font-semibold mb-1">{founder.name}</h3>
               <p className="text-primary text-sm font-body tracking-wider uppercase">{founder.role}</p>
             </motion.div>
