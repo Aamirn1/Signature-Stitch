@@ -10,6 +10,7 @@ import CartDrawer from "@/components/CartDrawer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import AIChatAssistant from "@/components/AIChatAssistant";
 import ScrollToTop from "@/components/ScrollToTop";
+import SEOHead from "@/components/SEOHead";
 
 const Category = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -28,6 +29,11 @@ const Category = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={category ? `${category.title} - Signature Stitch | Pakistani Clothing` : "Shop All - Signature Stitch | Premium Pakistani Fashion"}
+        description={category ? `Browse premium ${category.title} at Signature Stitch. ${category.subtitle}. Custom-stitched with free delivery across Pakistan.` : "Shop all premium Pakistani men's clothing. Shalwar Kameez, Waistcoats, 3-Piece Suits with free nationwide delivery."}
+        canonical={`https://signaturestitch.pk${slug ? `/category/${slug}` : '/shop'}`}
+      />
       <Navbar />
       <CartDrawer />
 

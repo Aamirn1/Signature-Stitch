@@ -4,6 +4,7 @@ import { ChevronDown } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import SEOHead from "@/components/SEOHead";
 
 const faqs = [
   {
@@ -45,6 +46,20 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="FAQ - Signature Stitch | Payments, Delivery & Returns"
+        description="Find answers about payments, delivery times, custom stitching, returns and sizing at Signature Stitch. COD available with 25% advance across Pakistan."
+        canonical="https://signaturestitch.pk/faq"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": faqs.map(f => ({
+            "@type": "Question",
+            "name": f.q,
+            "acceptedAnswer": { "@type": "Answer", "text": f.a }
+          }))
+        }}
+      />
       <Navbar />
       <CartDrawer />
       <div className="pt-24 pb-20 section-padding max-w-3xl mx-auto">
