@@ -62,10 +62,6 @@ const AnimatedRoutes = () => {
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </AnimatePresence>
-      {/* Floating buttons outside PageTransition to prevent transform breaking fixed positioning */}
-      <WhatsAppButton />
-      <AIChatAssistant />
-      <ScrollToTop />
     </>
   );
 };
@@ -80,6 +76,10 @@ const App = () => (
           <BrowserRouter>
             <AnimatedRoutes />
           </BrowserRouter>
+          {/* Floating buttons outside BrowserRouter to avoid any transform interference */}
+          <WhatsAppButton />
+          <AIChatAssistant />
+          <ScrollToTop />
         </CartProvider>
       </AuthProvider>
     </TooltipProvider>
