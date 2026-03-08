@@ -10,7 +10,7 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import CartDrawer from "@/components/CartDrawer";
 import ScrollToTop from "@/components/ScrollToTop";
 import AIChatAssistant from "@/components/AIChatAssistant";
-import PurchaseNotification from "@/components/PurchaseNotification";
+
 import SEOHead from "@/components/SEOHead";
 
 const Index = () => {
@@ -43,7 +43,7 @@ const Index = () => {
       <WhatsAppButton />
       <AIChatAssistant />
       <ScrollToTop />
-      <PurchaseNotification />
+      
     </div>
   );
 };
