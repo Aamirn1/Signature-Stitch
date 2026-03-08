@@ -14,7 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      measurements: {
+        Row: {
+          chest: number | null
+          collar: number | null
+          created_at: string
+          hip: number | null
+          id: string
+          inseam: number | null
+          is_default: boolean
+          label: string
+          measurement_photo_url: string | null
+          shirt_length: number | null
+          shoulder: number | null
+          sleeve_length: number | null
+          trouser_length: number | null
+          trouser_waist: number | null
+          updated_at: string
+          user_id: string
+          waist: number | null
+        }
+        Insert: {
+          chest?: number | null
+          collar?: number | null
+          created_at?: string
+          hip?: number | null
+          id?: string
+          inseam?: number | null
+          is_default?: boolean
+          label?: string
+          measurement_photo_url?: string | null
+          shirt_length?: number | null
+          shoulder?: number | null
+          sleeve_length?: number | null
+          trouser_length?: number | null
+          trouser_waist?: number | null
+          updated_at?: string
+          user_id: string
+          waist?: number | null
+        }
+        Update: {
+          chest?: number | null
+          collar?: number | null
+          created_at?: string
+          hip?: number | null
+          id?: string
+          inseam?: number | null
+          is_default?: boolean
+          label?: string
+          measurement_photo_url?: string | null
+          shirt_length?: number | null
+          shoulder?: number | null
+          sleeve_length?: number | null
+          trouser_length?: number | null
+          trouser_waist?: number | null
+          updated_at?: string
+          user_id?: string
+          waist?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

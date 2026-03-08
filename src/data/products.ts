@@ -14,7 +14,6 @@ export interface Product {
   description: string;
   rating: number;
   tag?: string;
-  sizes: string[];
   fabric: string;
   inStock: boolean;
 }
@@ -45,7 +44,6 @@ export const products: Product[] = [
     description: "A premium navy waistcoat crafted from the finest fabric. Features intricate detailing, a tailored fit, and a luxurious finish perfect for formal events and special occasions.",
     rating: 4.9,
     tag: "Best Seller",
-    sizes: ["S", "M", "L", "XL", "XXL"],
     fabric: "Premium Wool Blend",
     inStock: true,
   },
@@ -60,7 +58,6 @@ export const products: Product[] = [
     description: "A timeless white Shalwar Kameez made from premium cotton lawn. Comfortable, breathable, and perfect for everyday wear or Friday prayers.",
     rating: 4.8,
     tag: "New",
-    sizes: ["S", "M", "L", "XL", "XXL"],
     fabric: "Premium Cotton Lawn",
     inStock: true,
   },
@@ -75,7 +72,6 @@ export const products: Product[] = [
     description: "An elegant black 3-piece suit featuring a Kameez, Shalwar, and Waistcoat. Crafted with premium fabric for a sophisticated look at weddings and formal events.",
     rating: 5.0,
     tag: "Popular",
-    sizes: ["M", "L", "XL", "XXL"],
     fabric: "Premium Blended Wool",
     inStock: true,
   },
@@ -89,7 +85,6 @@ export const products: Product[] = [
     images: [collectionPants, collection3P, collectionWC],
     description: "A sleek formal ensemble pairing premium black trousers with a tailored shirt. Modern cut with classic appeal for office and evening wear.",
     rating: 4.7,
-    sizes: ["S", "M", "L", "XL"],
     fabric: "Cotton Blend",
     inStock: true,
   },
@@ -104,7 +99,6 @@ export const products: Product[] = [
     description: "A beautifully embroidered cream Shalwar Kameez with intricate threadwork on collar and cuffs. Perfect for Eid and festive occasions.",
     rating: 4.6,
     tag: "New",
-    sizes: ["M", "L", "XL", "XXL"],
     fabric: "Wash & Wear",
     inStock: true,
   },
@@ -118,7 +112,6 @@ export const products: Product[] = [
     images: [collectionWC, collection3P, collectionSK],
     description: "A luxurious maroon velvet waistcoat with gold-tone buttons and premium lining. Statement piece for wedding functions.",
     rating: 4.8,
-    sizes: ["S", "M", "L", "XL"],
     fabric: "Premium Velvet",
     inStock: true,
   },
@@ -132,7 +125,6 @@ export const products: Product[] = [
     images: [collection3P, collectionPants, collectionWC],
     description: "A sophisticated grey 3-piece suit ideal for formal gatherings. Includes Kameez, Shalwar, and matching Waistcoat.",
     rating: 4.9,
-    sizes: ["M", "L", "XL", "XXL"],
     fabric: "Tropical Wool",
     inStock: true,
   },
@@ -146,7 +138,6 @@ export const products: Product[] = [
     images: [collectionPants, collectionSK, collection3P],
     description: "Modern slim-fit navy trousers with comfort stretch. Versatile piece that pairs with both casual and formal shirts.",
     rating: 4.5,
-    sizes: ["S", "M", "L", "XL", "XXL"],
     fabric: "Cotton Stretch",
     inStock: true,
   },

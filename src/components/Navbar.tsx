@@ -4,6 +4,7 @@ import { Search, ShoppingBag, User, Menu, X, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import Logo from "@/components/Logo";
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 import SearchOverlay from "@/components/SearchOverlay";
 
 const navLinks = [
@@ -18,6 +19,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { items, toggleCart } = useCart();
+  const { user } = useAuth();
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -52,9 +54,17 @@ const Navbar = () => {
             >
               <Search size={20} />
             </button>
-            <button className="text-muted-foreground hover:text-primary transition-colors" aria-label="Account">
-              <User size={20} />
-            </button>
+            <Link
+              to={user ? "/profile" : "/auth"}
+              className="text-muted-foreground hover:text-primary transition-colors"
+              aria-label="Account"
+            >
+              {user?.user_metadata?.avatar_url ? (
+                <img src={user.user_metadata.avatar_url} alt="" className="w-6 h-6 rounded-full object-cover border border-primary/30" />
+              ) : (
+                <User size={20} />
+              )}
+            </Link>
             <button
               onClick={toggleCart}
               className="relative text-muted-foreground hover:text-primary transition-colors"

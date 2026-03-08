@@ -57,6 +57,9 @@ const CartDrawer = () => {
                       <div className="flex-1">
                         <h3 className="font-heading text-sm font-semibold">{item.name}</h3>
                         <p className="text-primary font-body text-sm mt-1">{item.price}</p>
+                        {item.measurementLabel && (
+                          <p className="text-[10px] text-muted-foreground font-body mt-0.5">📐 {item.measurementLabel}</p>
+                        )}
                         <div className="flex items-center gap-3 mt-2">
                           <button
                             onClick={() => {

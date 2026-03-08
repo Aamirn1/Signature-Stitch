@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingBag, Star, Minus, Plus, Truck, Shield, RotateCcw, ZoomIn, Ruler } from "lucide-react";
+import { ShoppingBag, Star, Minus, Plus, Truck, Shield, RotateCcw, ZoomIn, Ruler, AlertCircle } from "lucide-react";
 import { getProductById } from "@/data/products";
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -12,18 +14,47 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import AIChatAssistant from "@/components/AIChatAssistant";
 import ScrollToTop from "@/components/ScrollToTop";
 import RelatedProducts from "@/components/RelatedProducts";
-import SizeGuideModal from "@/components/SizeGuideModal";
 import ImageZoomModal from "@/components/ImageZoomModal";
+
+interface Measurement {
+  id: string;
+  label: string;
+  is_default: boolean;
+  chest: number | null;
+  shoulder: number | null;
+  shirt_length: number | null;
+  trouser_length: number | null;
+}
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const product = getProductById(id || "");
   const { addItem } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedMeasurement, setSelectedMeasurement] = useState<Measurement | null>(null);
+  const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const [quantity, setQuantity] = useState(1);
-  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
+  const [showMeasurementWarning, setShowMeasurementWarning] = useState(false);
+
+  useEffect(() => {
+    if (user) fetchMeasurements();
+  }, [user]);
+
+  const fetchMeasurements = async () => {
+    const { data } = await supabase
+      .from("measurements")
+      .select("id, label, is_default, chest, shoulder, shirt_length, trouser_length")
+      .eq("user_id", user!.id)
+      .order("is_default", { ascending: false });
+    if (data && data.length > 0) {
+      setMeasurements(data as Measurement[]);
+      const def = data.find((m: any) => m.is_default) || data[0];
+      setSelectedMeasurement(def as Measurement);
+    }
+  };
 
   if (!product) {
     return (
@@ -37,12 +68,36 @@ const ProductDetail = () => {
   }
 
   const handleAddToCart = () => {
+    // If user not logged in, redirect to auth
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    // If no measurements saved, redirect to profile
+    if (measurements.length === 0) {
+      setShowMeasurementWarning(true);
+      return;
+    }
+    if (!selectedMeasurement) {
+      setShowMeasurementWarning(true);
+      return;
+    }
+
     for (let i = 0; i < quantity; i++) {
-      addItem({ id: product.id, name: product.name, price: product.priceFormatted, image: product.images[0] });
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.priceFormatted,
+        image: product.images[0],
+        measurementId: selectedMeasurement.id,
+        measurementLabel: selectedMeasurement.label,
+      });
     }
   };
 
-  const whatsAppMessage = `Hi! I'm interested in ${product.name} (${product.priceFormatted})${selectedSize ? `, Size: ${selectedSize}` : ""}. Please share more details.`;
+  const goToProfile = () => navigate("/profile");
+
+  const whatsAppMessage = `Hi! I'm interested in ${product.name} (${product.priceFormatted}). Please share more details.`;
   const whatsAppUrl = `https://wa.me/923205719979?text=${encodeURIComponent(whatsAppMessage)}`;
 
   return (
@@ -62,20 +117,9 @@ const ProductDetail = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 pb-10">
           {/* Images */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div
-              className="relative aspect-[3/4] overflow-hidden rounded-lg bg-card mb-4 product-glow cursor-zoom-in group"
-              onClick={() => setZoomOpen(true)}
-            >
-              <img
-                src={product.images[selectedImage]}
-                alt={product.name}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+            <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-card mb-4 product-glow cursor-zoom-in group" onClick={() => setZoomOpen(true)}>
+              <img src={product.images[selectedImage]} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
               <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <ZoomIn size={16} className="text-foreground" />
               </div>
@@ -87,13 +131,7 @@ const ProductDetail = () => {
             </div>
             <div className="grid grid-cols-3 gap-3">
               {product.images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedImage(i)}
-                  className={`aspect-[3/4] overflow-hidden rounded-lg border-2 transition-all duration-300 ${
-                    selectedImage === i ? "border-primary" : "border-transparent hover:border-primary/30"
-                  }`}
-                >
+                <button key={i} onClick={() => setSelectedImage(i)} className={`aspect-[3/4] overflow-hidden rounded-lg border-2 transition-all duration-300 ${selectedImage === i ? "border-primary" : "border-transparent hover:border-primary/30"}`}>
                   <img src={img} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover" />
                 </button>
               ))}
@@ -101,12 +139,7 @@ const ProductDetail = () => {
           </motion.div>
 
           {/* Details */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col"
-          >
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="flex flex-col">
             {product.tag && (
               <span className="inline-block w-fit bg-primary text-primary-foreground text-[10px] tracking-wider uppercase font-body font-semibold px-3 py-1 rounded-sm mb-4">
                 {product.tag}
@@ -141,49 +174,83 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Size Selection */}
+            {/* Custom Measurements Section */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-body tracking-wider uppercase text-muted-foreground">Select Size</p>
-                <button
-                  onClick={() => setSizeGuideOpen(true)}
-                  className="flex items-center gap-1 text-xs text-primary font-body hover:underline"
-                >
-                  <Ruler size={12} /> Size Guide
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {product.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`w-12 h-12 rounded-lg border text-sm font-body font-semibold transition-all duration-300 ${
-                      selectedSize === size
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "border-border text-foreground hover:border-primary"
-                    }`}
-                  >
-                    {size}
+                <p className="text-xs font-body tracking-wider uppercase text-muted-foreground">Your Measurements</p>
+                {user && (
+                  <button onClick={goToProfile} className="flex items-center gap-1 text-xs text-primary font-body hover:underline">
+                    <Ruler size={12} /> Manage Measurements
                   </button>
-                ))}
+                )}
               </div>
+
+              {!user ? (
+                <div className="bg-secondary/50 border border-border rounded-lg p-4">
+                  <p className="text-sm font-body text-muted-foreground mb-2">
+                    Sign in to add your measurements for custom stitching
+                  </p>
+                  <Button size="sm" onClick={() => navigate("/auth")} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90">
+                    Sign In
+                  </Button>
+                </div>
+              ) : measurements.length === 0 ? (
+                <div className="bg-secondary/50 border border-border rounded-lg p-4">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle size={16} className="text-primary mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-sm font-body text-foreground mb-1">No measurements saved</p>
+                      <p className="text-xs font-body text-muted-foreground mb-3">
+                        We make custom-stitched clothes. Please add your body measurements to order.
+                      </p>
+                      <Button size="sm" onClick={goToProfile} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90 gap-1">
+                        <Ruler size={12} /> Add Measurements
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {measurements.map((m) => (
+                    <button
+                      key={m.id}
+                      onClick={() => { setSelectedMeasurement(m); setShowMeasurementWarning(false); }}
+                      className={`w-full text-left p-3 rounded-lg border transition-all duration-300 ${
+                        selectedMeasurement?.id === m.id
+                          ? "bg-primary/10 border-primary"
+                          : "border-border hover:border-primary/30"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-body font-semibold">{m.label}</span>
+                        {m.is_default && <span className="text-[10px] text-primary font-body">Default</span>}
+                      </div>
+                      <div className="flex gap-3 mt-1 text-[10px] font-body text-muted-foreground">
+                        {m.chest && <span>Chest: {m.chest}"</span>}
+                        {m.shoulder && <span>Shoulder: {m.shoulder}"</span>}
+                        {m.shirt_length && <span>Length: {m.shirt_length}"</span>}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {showMeasurementWarning && (
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-destructive font-body mt-2 flex items-center gap-1">
+                  <AlertCircle size={12} /> Please save your measurements first before adding to cart
+                </motion.p>
+              )}
             </div>
 
             {/* Quantity */}
             <div className="mb-8">
               <p className="text-xs font-body tracking-wider uppercase text-muted-foreground mb-3">Quantity</p>
               <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-lg border border-border flex items-center justify-center hover:border-primary transition-colors"
-                >
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 rounded-lg border border-border flex items-center justify-center hover:border-primary transition-colors">
                   <Minus size={16} />
                 </button>
                 <span className="font-body text-lg font-semibold w-8 text-center">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 rounded-lg border border-border flex items-center justify-center hover:border-primary transition-colors"
-                >
+                <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 rounded-lg border border-border flex items-center justify-center hover:border-primary transition-colors">
                   <Plus size={16} />
                 </button>
               </div>
@@ -199,12 +266,7 @@ const ProductDetail = () => {
               >
                 <ShoppingBag size={18} /> Add to Cart
               </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="flex-1 border-primary text-primary font-body tracking-widest uppercase text-sm py-6 hover:bg-primary hover:text-primary-foreground"
-              >
+              <Button asChild size="lg" variant="outline" className="flex-1 border-primary text-primary font-body tracking-widest uppercase text-sm py-6 hover:bg-primary hover:text-primary-foreground">
                 <a href={whatsAppUrl} target="_blank" rel="noopener noreferrer">
                   Order via WhatsApp
                 </a>
@@ -230,21 +292,13 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* Related Products */}
       <RelatedProducts currentProductId={product.id} categorySlug={product.categorySlug} />
 
       <Footer />
       <WhatsAppButton />
       <AIChatAssistant />
       <ScrollToTop />
-      <SizeGuideModal isOpen={sizeGuideOpen} onClose={() => setSizeGuideOpen(false)} />
-      <ImageZoomModal
-        images={product.images}
-        selectedIndex={selectedImage}
-        isOpen={zoomOpen}
-        onClose={() => setZoomOpen(false)}
-        onNavigate={setSelectedImage}
-      />
+      <ImageZoomModal images={product.images} selectedIndex={selectedImage} isOpen={zoomOpen} onClose={() => setZoomOpen(false)} onNavigate={setSelectedImage} />
     </div>
   );
 };
