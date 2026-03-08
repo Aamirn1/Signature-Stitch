@@ -6,6 +6,8 @@ export interface CartItem {
   price: string;
   image: string;
   quantity: number;
+  measurementId?: string;
+  measurementLabel?: string;
 }
 
 interface CartContextType {
@@ -25,9 +27,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = (item: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
+      const existing = prev.find((i) => i.id === item.id && i.measurementId === item.measurementId);
       if (existing) {
-        return prev.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i));
+        return prev.map((i) => (i.id === item.id && i.measurementId === item.measurementId ? { ...i, quantity: i.quantity + 1 } : i));
       }
       return [...prev, { ...item, quantity: 1 }];
     });
