@@ -6,10 +6,10 @@ const NewsletterSection = () => {
   return (
     <section className="py-20 section-padding">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="max-w-2xl mx-auto text-center"
       >
         <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-3">
@@ -24,9 +24,11 @@ const NewsletterSection = () => {
             placeholder="Your email address"
             className="bg-secondary border-border text-foreground font-body placeholder:text-muted-foreground flex-1"
           />
-          <Button type="submit" className="bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-xs px-6 hover:opacity-90">
-            Subscribe
-          </Button>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button type="submit" className="bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-xs px-6 btn-gold-glow">
+              Subscribe
+            </Button>
+          </motion.div>
         </form>
       </motion.div>
     </section>

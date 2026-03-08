@@ -17,7 +17,7 @@ const wordVariants = {
 
 const HeroSection = () => {
   return (
-    <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+    <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden ambient-glow">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
@@ -56,7 +56,7 @@ const HeroSection = () => {
               </motion.span>
             ))}
           </span>
-          <span className="block text-gold-gradient pb-2">
+          <span className="block text-gold-gradient pb-3">
             <motion.span
               custom={words1.length}
               variants={wordVariants}
@@ -85,12 +85,16 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 2.0 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Button asChild size="lg" className="bg-primary font-body tracking-widest uppercase text-sm px-8 py-6 hover:bg-primary/90 transition-all text-primary-foreground font-semibold">
-            <Link to="/shop">Shop Now</Link>
-          </Button>
-          <Button asChild size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-sm px-8 py-6 hover:bg-primary hover:text-primary-foreground transition-all">
-            <a href="#collections">View Collections</a>
-          </Button>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button asChild size="lg" className="bg-gold-gradient font-body tracking-widest uppercase text-sm px-8 py-6 transition-all text-primary-foreground font-semibold btn-gold-glow glow-pulse">
+              <Link to="/shop">Shop Now</Link>
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button asChild size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-sm px-8 py-6 hover:bg-primary hover:text-primary-foreground transition-all">
+              <a href="#collections">View Collections</a>
+            </Button>
+          </motion.div>
         </motion.div>
       </div>
 

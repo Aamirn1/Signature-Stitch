@@ -6,10 +6,10 @@ const FeaturedCollections = () => {
   return (
     <section id="collections" className="py-20 lg:py-28 section-padding max-w-7xl mx-auto">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="text-center mb-14"
       >
         <p className="text-sm tracking-[0.3em] uppercase text-primary font-body mb-3">Explore</p>
@@ -22,14 +22,15 @@ const FeaturedCollections = () => {
         {categories.map((col, i) => (
           <motion.div
             key={col.slug}
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
+            transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="card-3d"
           >
             <Link
               to={`/category/${col.slug}`}
-              className="group relative aspect-[3/4] overflow-hidden rounded-lg cursor-pointer block product-glow"
+              className="group relative aspect-[3/4] overflow-hidden rounded-lg cursor-pointer block card-glow card-3d-inner"
             >
               <img
                 src={col.image}
