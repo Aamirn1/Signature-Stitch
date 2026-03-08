@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
 import { Button } from "@/components/ui/button";
 
@@ -54,11 +55,11 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.9 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Button size="lg" className="bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-sm px-8 py-6 hover:opacity-90 transition-opacity">
-            Shop Now
+          <Button asChild size="lg" className="bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-sm px-8 py-6 hover:opacity-90 transition-opacity">
+            <Link to="/shop">Shop Now</Link>
           </Button>
-          <Button size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-sm px-8 py-6 hover:bg-primary hover:text-primary-foreground transition-all">
-            View Collections
+          <Button asChild size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-sm px-8 py-6 hover:bg-primary hover:text-primary-foreground transition-all">
+            <a href="#collections">View Collections</a>
           </Button>
         </motion.div>
       </div>
