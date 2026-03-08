@@ -10,9 +10,9 @@ import SearchOverlay from "@/components/SearchOverlay";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Shop", href: "/shop" },
-  { label: "Collections", href: "/#collections" },
+  { label: "Collections", href: "/collections" },
   { label: "Blog", href: "/blog" },
-  { label: "About", href: "/#founders" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 

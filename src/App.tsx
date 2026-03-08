@@ -25,6 +25,8 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Collections from "./pages/Collections";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +48,8 @@ const AnimatedRoutes = () => {
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<PageTransition><Index /></PageTransition>} />
           <Route path="/shop" element={<PageTransition><Category /></PageTransition>} />
+          <Route path="/collections" element={<PageTransition><Collections /></PageTransition>} />
+          <Route path="/about" element={<PageTransition><About /></PageTransition>} />
           <Route path="/category/:slug" element={<PageTransition><Category /></PageTransition>} />
           <Route path="/product/:id" element={<PageTransition><ProductDetail /></PageTransition>} />
           <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
