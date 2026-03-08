@@ -3,8 +3,8 @@ import founderAamir from "@/assets/founder-aamir.webp";
 import founderSheryar from "@/assets/founder-sheryar.jpg";
 
 const founders = [
-  { name: "Muhammad Aamir", role: "Co-Founder", image: founderAamir },
-  { name: "Sheryar Rajpoot", role: "Co-Founder", image: founderSheryar },
+  { name: "Muhammad Aamir", role: "Co-Founder", tagline: "Providing quality is our mission.", image: founderAamir },
+  { name: "Sheryar Rajpoot", role: "Co-Founder", tagline: "Crafting elegance in every stitch.", image: founderSheryar },
 ];
 
 const FoundersSection = () => {
