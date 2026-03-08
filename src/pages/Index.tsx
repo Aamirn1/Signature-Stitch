@@ -6,11 +6,7 @@ import BestSellers from "@/components/BestSellers";
 import FoundersSection from "@/components/FoundersSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
 import CartDrawer from "@/components/CartDrawer";
-import ScrollToTop from "@/components/ScrollToTop";
-import AIChatAssistant from "@/components/AIChatAssistant";
-
 import SEOHead from "@/components/SEOHead";
 
 const Index = () => {
@@ -40,10 +36,6 @@ const Index = () => {
       <FoundersSection />
       <NewsletterSection />
       <Footer />
-      <WhatsAppButton />
-      <AIChatAssistant />
-      <ScrollToTop />
-      
     </div>
   );
 };
