@@ -56,7 +56,7 @@ const HeroSection = () => {
               </motion.span>
             ))}
           </span>
-          <span className="block text-gold-gradient">
+          <span className="block text-gold-gradient pb-2">
             <motion.span
               custom={words1.length}
               variants={wordVariants}
@@ -85,7 +85,7 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 2.0 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Button asChild size="lg" className="bg-gold-gradient font-body tracking-widest uppercase text-sm px-8 py-6 hover:opacity-90 transition-opacity text-background font-semibold">
+          <Button asChild size="lg" className="bg-primary font-body tracking-widest uppercase text-sm px-8 py-6 hover:bg-primary/90 transition-all text-primary-foreground font-semibold">
             <Link to="/shop">Shop Now</Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-sm px-8 py-6 hover:bg-primary hover:text-primary-foreground transition-all">
