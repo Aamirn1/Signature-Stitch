@@ -3,9 +3,15 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import SEOHead from "@/components/SEOHead";
 
 const Contact = () => (
   <div className="min-h-screen bg-background">
+    <SEOHead
+      title="Contact Signature Stitch | WhatsApp +92 320 5719979"
+      description="Reach Signature Stitch via WhatsApp, phone or email. Fast response for orders, custom stitching inquiries & support. Nationwide delivery across Pakistan."
+      canonical="https://signaturestitch.pk/contact"
+    />
     <Navbar />
     <CartDrawer />
     <div className="pt-24 pb-20 section-padding max-w-4xl mx-auto">

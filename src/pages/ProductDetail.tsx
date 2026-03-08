@@ -15,6 +15,7 @@ import AIChatAssistant from "@/components/AIChatAssistant";
 import ScrollToTop from "@/components/ScrollToTop";
 import RelatedProducts from "@/components/RelatedProducts";
 import ImageZoomModal from "@/components/ImageZoomModal";
+import SEOHead from "@/components/SEOHead";
 
 interface Measurement {
   id: string;
@@ -102,6 +103,32 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={`${product.name} - Signature Stitch | ${product.priceFormatted}`}
+        description={product.description.substring(0, 155)}
+        canonical={`https://signaturestitch.pk/product/${product.id}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": product.name,
+          "description": product.description,
+          "image": product.images[0],
+          "brand": { "@type": "Brand", "name": "Signature Stitch" },
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "PKR",
+            "price": product.price,
+            "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "seller": { "@type": "Organization", "name": "Signature Stitch" }
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": product.rating,
+            "bestRating": "5",
+            "ratingCount": "50"
+          }
+        }}
+      />
       <Navbar />
       <CartDrawer />
 

@@ -3,6 +3,18 @@ import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
 import { Button } from "@/components/ui/button";
 
+const sentence = "Where Tradition Meets";
+const word2 = "Elegance";
+
+const letterVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.5 + i * 0.04, duration: 0.4, ease: "easeOut" as const },
+  }),
+};
+
 const HeroSection = () => {
   return (
     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
@@ -10,7 +22,7 @@ const HeroSection = () => {
       <div className="absolute inset-0">
         <img
           src={heroBanner}
-          alt="Signature Stitch Premium Collection"
+          alt="Signature Stitch Premium Pakistani Clothing Collection - Shalwar Kameez, Waistcoats & 3-Piece Suits"
           className="w-full h-full object-cover"
           loading="eager"
         />
@@ -29,20 +41,40 @@ const HeroSection = () => {
           </p>
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6"
-        >
-          Where Tradition Meets
-          <span className="block text-gold-gradient">Elegance</span>
-        </motion.h1>
+        <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+          {sentence.split("").map((char, i) => (
+            <motion.span
+              key={`l1-${i}`}
+              custom={i}
+              variants={letterVariants}
+              initial="hidden"
+              animate="visible"
+              className="inline-block"
+              style={{ whiteSpace: char === " " ? "pre" : undefined }}
+            >
+              {char === " " ? "\u00A0" : char}
+            </motion.span>
+          ))}
+          <span className="block text-gold-gradient">
+            {word2.split("").map((char, i) => (
+              <motion.span
+                key={`l2-${i}`}
+                custom={sentence.length + i}
+                variants={letterVariants}
+                initial="hidden"
+                animate="visible"
+                className="inline-block"
+              >
+                {char}
+              </motion.span>
+            ))}
+          </span>
+        </h1>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
+          transition={{ duration: 0.8, delay: 1.8 }}
           className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto mb-8 font-body"
         >
           Discover meticulously crafted Shalwar Kameez, Waistcoats & 3-Piece Suits.
@@ -52,7 +84,7 @@ const HeroSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
+          transition={{ duration: 0.8, delay: 2.0 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <Button asChild size="lg" className="bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-sm px-8 py-6 hover:opacity-90 transition-opacity">
@@ -68,7 +100,7 @@ const HeroSection = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
+        transition={{ delay: 2.5 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div
