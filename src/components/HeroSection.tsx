@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
 import { Button } from "@/components/ui/button";
 
-const sentence = "Where Tradition Meets";
+const words1 = ["Where", "Tradition", "Meets"];
 const word2 = "Elegance";
 
-const letterVariants = {
+const wordVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: 0.5 + i * 0.04, duration: 0.4, ease: "easeOut" as const },
+    transition: { delay: 0.5 + i * 0.3, duration: 0.5, ease: "easeOut" as const },
   }),
 };
 
@@ -42,32 +42,30 @@ const HeroSection = () => {
         </motion.div>
 
         <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-          {sentence.split("").map((char, i) => (
+          <span className="whitespace-nowrap">
+            {words1.map((word, i) => (
+              <motion.span
+                key={`w-${i}`}
+                custom={i}
+                variants={wordVariants}
+                initial="hidden"
+                animate="visible"
+                className="inline-block mr-[0.3em]"
+              >
+                {word}
+              </motion.span>
+            ))}
+          </span>
+          <span className="block text-gold-gradient">
             <motion.span
-              key={`l1-${i}`}
-              custom={i}
-              variants={letterVariants}
+              custom={words1.length}
+              variants={wordVariants}
               initial="hidden"
               animate="visible"
               className="inline-block"
-              style={{ whiteSpace: char === " " ? "pre" : undefined }}
             >
-              {char === " " ? "\u00A0" : char}
+              {word2}
             </motion.span>
-          ))}
-          <span className="block text-gold-gradient">
-            {word2.split("").map((char, i) => (
-              <motion.span
-                key={`l2-${i}`}
-                custom={sentence.length + i}
-                variants={letterVariants}
-                initial="hidden"
-                animate="visible"
-                className="inline-block"
-              >
-                {char}
-              </motion.span>
-            ))}
           </span>
         </h1>
 
