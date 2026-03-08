@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Ruler, Plus, Trash2, Camera, Check, LogOut, Star } from "lucide-react";
+import { User, Ruler, Plus, Trash2, Camera, Check, LogOut, Star, Handshake, ArrowRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -65,6 +65,11 @@ const Profile = () => {
   const [editingMeasurement, setEditingMeasurement] = useState<Omit<Measurement, "id"> & { id?: string } | null>(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [partnerStatus, setPartnerStatus] = useState<string | null>(null);
+
+  // Partner application form
+  const [showPartnerForm, setShowPartnerForm] = useState(false);
+  const [partnerForm, setPartnerForm] = useState({ business_name: "", phone: "", city: "", reason: "" });
 
   useEffect(() => {
     if (!loading && !user) {
@@ -76,6 +81,7 @@ const Profile = () => {
     if (user) {
       fetchProfile();
       fetchMeasurements();
+      fetchPartnerStatus();
     }
   }, [user]);
 
@@ -167,6 +173,34 @@ const Profile = () => {
     setEditingMeasurement({ ...editingMeasurement, measurement_photo_url: publicUrl });
     setUploading(false);
     toast.success("Photo uploaded");
+  };
+
+  const fetchPartnerStatus = async () => {
+    const { data } = await supabase.from("partner_applications").select("status").eq("user_id", user!.id).maybeSingle();
+    setPartnerStatus(data?.status ?? null);
+  };
+
+  const applyAsPartner = async () => {
+    if (!partnerForm.business_name || !partnerForm.phone || !partnerForm.city) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.from("partner_applications").insert({
+      user_id: user!.id,
+      business_name: partnerForm.business_name,
+      phone: partnerForm.phone,
+      city: partnerForm.city,
+      reason: partnerForm.reason,
+    });
+    setSaving(false);
+    if (error) {
+      toast.error("Application failed. You may have already applied.");
+      return;
+    }
+    toast.success("Partner application submitted!");
+    setShowPartnerForm(false);
+    setPartnerStatus("pending");
   };
 
   const handleSignOut = async () => {
