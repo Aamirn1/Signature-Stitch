@@ -34,8 +34,8 @@ const HeroSection = () => {
           </p>
         </motion.div>
 
-        <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-          <span className="whitespace-nowrap">
+        <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+          <span className="block sm:whitespace-nowrap">
             {line1.split("").map((char, i) => (
               <motion.span
                 key={`c1-${i}`}

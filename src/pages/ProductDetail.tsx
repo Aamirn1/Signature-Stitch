@@ -149,13 +149,13 @@ const ProductDetail = () => {
 
       <div className="pt-20 lg:pt-24 section-padding max-w-7xl mx-auto">
         {/* Breadcrumb with back button */}
-        <div className="py-4 flex items-center gap-3 text-sm font-body">
+        <div className="py-4 flex items-center gap-2 text-sm font-body overflow-x-auto scrollbar-hide">
           <BackButton />
-          <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
-          <span className="text-muted-foreground">/</span>
-          <Link to={`/category/${product.categorySlug}`} className="text-muted-foreground hover:text-primary transition-colors">{product.category}</Link>
-          <span className="text-muted-foreground">/</span>
-          <span className="text-foreground">{product.name}</span>
+          <Link to="/" className="text-muted-foreground hover:text-primary transition-colors shrink-0">Home</Link>
+          <span className="text-muted-foreground shrink-0">/</span>
+          <Link to={`/category/${product.categorySlug}`} className="text-muted-foreground hover:text-primary transition-colors shrink-0">{product.category}</Link>
+          <span className="text-muted-foreground shrink-0">/</span>
+          <span className="text-foreground truncate max-w-[120px] sm:max-w-none">{product.name}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 pb-10">
@@ -189,7 +189,7 @@ const ProductDetail = () => {
               </span>
             )}
 
-            <h1 className="font-heading text-3xl lg:text-4xl font-bold mb-3">{product.name}</h1>
+            <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold mb-3">{product.name}</h1>
 
             <div className="flex items-center gap-2 mb-4">
               <div className="flex items-center gap-1">
