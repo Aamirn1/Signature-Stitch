@@ -54,24 +54,29 @@ const AIChatAssistant = () => {
   return (
     <>
       {/* Toggle Button */}
-      <div className="fixed bottom-24 right-6 z-50">
+      <div className="fixed bottom-20 sm:bottom-24 right-4 sm:right-6 z-50">
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 2.5, type: "spring" }}
           whileHover={{ scale: 1.1 }}
-          className="w-14 h-14 rounded-full bg-gold-gradient flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow"
+          className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gold-gradient flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow"
           aria-label="Customer Support"
         >
           {isOpen ? (
-            <X size={24} className="text-primary-foreground" />
+            <X size={20} className="text-primary-foreground sm:hidden" />
           ) : (
-            <Headset size={26} className="text-primary-foreground" />
+            <Headset size={22} className="text-primary-foreground sm:hidden" />
+          )}
+          {isOpen ? (
+            <X size={24} className="text-primary-foreground hidden sm:block" />
+          ) : (
+            <Headset size={26} className="text-primary-foreground hidden sm:block" />
           )}
         </motion.button>
         {!isOpen && (
-          <span className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-background animate-pulse" />
+          <span className="absolute top-0 right-0 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-green-500 border-2 border-background animate-pulse" />
         )}
       </div>
 
@@ -83,10 +88,10 @@ const AIChatAssistant = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-40 right-6 z-50 w-[340px] sm:w-[380px] h-[480px] bg-card border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed bottom-36 sm:bottom-40 right-2 sm:right-6 z-50 w-[calc(100vw-1rem)] sm:w-[380px] max-w-[380px] h-[420px] sm:h-[480px] bg-card border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-gold-gradient px-4 py-3 flex items-center gap-3">
+            <div className="bg-gold-gradient px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-3">
               <img src={supportAgent} alt="Support" className="w-9 h-9 rounded-full object-cover border-2 border-primary-foreground/30" />
               <div>
                 <p className="text-primary-foreground font-heading text-sm font-bold">Customer Support</p>
