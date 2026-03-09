@@ -4,13 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import CartNotification from "@/components/CartNotification";
 
-export interface CartItemCustomization {
-  clothType: "stitched" | "unstitched";
-  collarType: "collar" | "cuff";
-  buttonType: "simple" | "fancy";
-  flareType: "circular" | "slit";
-  pleatType: "single" | "double";
-}
+export type CartItemCustomization = Record<string, string>;
 
 export interface CartItem {
   id: string;

@@ -17,7 +17,7 @@ import RelatedProducts from "@/components/RelatedProducts";
 import ImageZoomModal from "@/components/ImageZoomModal";
 import BackButton from "@/components/BackButton";
 import SEOHead from "@/components/SEOHead";
-import ProductCustomization, { CustomizationOptions, getExtraCharges } from "@/components/ProductCustomization";
+import ProductCustomization, { CustomizationOptions, getExtraCharges, getDefaultOptions, Category } from "@/components/ProductCustomization";
 
 interface Measurement {
   id: string;
