@@ -3,17 +3,11 @@ import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
 import { Button } from "@/components/ui/button";
 
-const words1 = ["Where", "Tradition", "Meets"];
-const word2 = "Elegance";
-
-const wordVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: 0.5 + i * 0.3, duration: 0.5, ease: "easeOut" as const },
-  }),
-};
+const line1 = "Where Tradition Meets";
+const line2 = "Elegance";
+const allChars = line1 + "\n" + line2;
+const charDelay = 0.06;
+const startDelay = 0.5;
 
 const HeroSection = () => {
   return (
