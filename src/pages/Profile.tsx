@@ -301,41 +301,43 @@ const Profile = () => {
 
           <div className="space-y-3 mb-6">
             {measurements.map((m) => (
-              <div key={m.id} className="bg-card border border-border rounded-xl p-5 flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-heading text-sm font-semibold">{m.label}</h3>
-                    {m.is_default && (
-                      <span className="inline-flex items-center gap-1 bg-primary/20 text-primary text-[10px] font-body font-semibold px-2 py-0.5 rounded-full">
-                        <Star size={10} /> Default
-                      </span>
+              <div key={m.id} className="bg-card border border-border rounded-xl p-4 sm:p-5">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <h3 className="font-heading text-sm font-semibold">{m.label}</h3>
+                      {m.is_default && (
+                        <span className="inline-flex items-center gap-1 bg-primary/20 text-primary text-[10px] font-body font-semibold px-2 py-0.5 rounded-full">
+                          <Star size={10} /> Default
+                        </span>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-3 gap-y-1 text-xs font-body text-muted-foreground">
+                      {measurementFields.map(({ key, label }) => {
+                        const val = m[key as keyof Measurement];
+                        return val ? <span key={key} className="truncate">{label}: {String(val)}"</span> : null;
+                      })}
+                    </div>
+                    {m.measurement_photo_url && (
+                      <a href={m.measurement_photo_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 mt-2 text-xs text-primary font-body hover:underline">
+                        <Camera size={12} /> View tailor's measurement photo
+                      </a>
                     )}
                   </div>
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-x-4 gap-y-1 text-xs font-body text-muted-foreground">
-                    {measurementFields.map(({ key, label }) => {
-                      const val = m[key as keyof Measurement];
-                      return val ? <span key={key}>{label}: {String(val)}"</span> : null;
-                    })}
+                  <div className="flex items-center gap-3 sm:gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-border">
+                    {!m.is_default && (
+                      <button onClick={() => setDefault(m.id)} className="text-xs text-primary font-body hover:underline">Set Default</button>
+                    )}
+                    <button
+                      onClick={() => setEditingMeasurement({ ...m })}
+                      className="text-xs text-muted-foreground font-body hover:text-foreground"
+                    >
+                      Edit
+                    </button>
+                    <button onClick={() => deleteMeasurement(m.id)} className="text-destructive hover:text-destructive/80 transition-colors">
+                      <Trash2 size={14} />
+                    </button>
                   </div>
-                  {m.measurement_photo_url && (
-                    <a href={m.measurement_photo_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 mt-2 text-xs text-primary font-body hover:underline">
-                      <Camera size={12} /> View tailor's measurement photo
-                    </a>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  {!m.is_default && (
-                    <button onClick={() => setDefault(m.id)} className="text-xs text-primary font-body hover:underline">Set Default</button>
-                  )}
-                  <button
-                    onClick={() => setEditingMeasurement({ ...m })}
-                    className="text-xs text-muted-foreground font-body hover:text-foreground"
-                  >
-                    Edit
-                  </button>
-                  <button onClick={() => deleteMeasurement(m.id)} className="text-destructive hover:text-destructive/80 transition-colors">
-                    <Trash2 size={14} />
-                  </button>
                 </div>
               </div>
             ))}

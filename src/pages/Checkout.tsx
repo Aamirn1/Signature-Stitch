@@ -130,18 +130,18 @@ const Checkout = () => {
         </div>
 
         {/* Progress Steps */}
-        <div className="flex items-center justify-center gap-2 mb-10">
+        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-8 sm:mb-10 px-2">
           {["Cart", "Shipping", "Payment", "Review"].map((step, i) => (
-            <div key={step} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-body font-bold ${
+            <div key={step} className="flex items-center gap-1 sm:gap-2">
+              <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-body font-bold ${
                 i <= 1 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
               }`}>
                 {i + 1}
               </div>
-              <span className={`text-xs font-body tracking-wider uppercase hidden sm:inline ${
+              <span className={`text-[10px] sm:text-xs font-body tracking-wider uppercase hidden xs:inline ${
                 i <= 1 ? "text-primary" : "text-muted-foreground"
               }`}>{step}</span>
-              {i < 3 && <div className={`w-8 sm:w-12 h-px ${i < 1 ? "bg-primary" : "bg-border"}`} />}
+              {i < 3 && <div className={`w-4 sm:w-8 lg:w-12 h-px ${i < 1 ? "bg-primary" : "bg-border"}`} />}
             </div>
           ))}
         </div>
