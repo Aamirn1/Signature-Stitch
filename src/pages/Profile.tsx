@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Ruler, Plus, Trash2, Camera, Check, LogOut, Star, Handshake, ArrowRight } from "lucide-react";
+import { User, Ruler, Plus, Trash2, Camera, Check, LogOut, Star, Handshake, ArrowRight, Package } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -246,6 +246,22 @@ const Profile = () => {
           <Button onClick={saveProfile} disabled={saving} className="mt-4 bg-gold-gradient text-primary-foreground font-body tracking-wider uppercase text-xs hover:opacity-90">
             {saving ? "Saving..." : "Save Profile"}
           </Button>
+        </motion.div>
+
+        {/* My Orders Section */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-8">
+          <Link to="/my-orders" className="bg-card border border-border rounded-xl p-6 flex items-center justify-between hover:border-primary/30 transition-colors group block">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                <Package size={18} className="text-primary" />
+              </div>
+              <div>
+                <h2 className="font-heading text-lg font-semibold">My Orders</h2>
+                <p className="text-xs text-muted-foreground font-body">Track your orders and payments</p>
+              </div>
+            </div>
+            <ArrowRight size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
+          </Link>
         </motion.div>
 
         {/* Measurements Section */}
