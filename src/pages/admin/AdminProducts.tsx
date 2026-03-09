@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload, Download, ImagePlus, Loader2, FileDown, FileUp } from "lucide-react";
 
 const categories = [
   { slug: "shalwar-kameez", name: "Shalwar Kameez" },
@@ -45,6 +45,10 @@ export default function AdminProducts() {
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<ProductForm>(initialForm);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [importLoading, setImportLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["admin-products"],
@@ -99,6 +103,32 @@ export default function AdminProducts() {
     onError: () => toast.error("Failed to delete product"),
   });
 
+  const handleImageUpload = async (file: File) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+    setImageUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const fileName = `product-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage
+        .from("product-images")
+        .upload(fileName, file, { upsert: true });
+      if (error) throw error;
+      const { data: { publicUrl } } = supabase.storage
+        .from("product-images")
+        .getPublicUrl(fileName);
+      setForm((prev) => ({ ...prev, image_url: publicUrl }));
+      toast.success("Image uploaded!");
+    } catch (err: any) {
+      toast.error(err.message || "Upload failed");
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const productData = {
@@ -106,7 +136,6 @@ export default function AdminProducts() {
       price: parseFloat(form.price),
       slug: form.slug || form.name.toLowerCase().replace(/\s+/g, "-"),
     };
-
     if (editingId) {
       updateProduct.mutate({ id: editingId, ...productData });
     } else {
@@ -136,122 +165,282 @@ export default function AdminProducts() {
     }
   };
 
+  // ── CSV Export ──────────────────────────────────────────────────────────────
+  const handleExport = () => {
+    if (!products || products.length === 0) {
+      toast.error("No products to export");
+      return;
+    }
+    const headers = ["name", "slug", "price", "category_slug", "image_url", "description", "is_active"];
+    const rows = products.map((p) =>
+      headers.map((h) => {
+        const val = (p as any)[h];
+        if (typeof val === "string" && (val.includes(",") || val.includes('"') || val.includes("\n"))) {
+          return `"${val.replace(/"/g, '""')}"`;
+        }
+        return val ?? "";
+      }).join(",")
+    );
+    const csv = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `products-${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Exported ${products.length} products`);
+  };
+
+  // ── CSV Import ──────────────────────────────────────────────────────────────
+  const handleImport = async (file: File) => {
+    setImportLoading(true);
+    try {
+      const text = await file.text();
+      const lines = text.trim().split("\n");
+      if (lines.length < 2) throw new Error("CSV must have a header row and at least one product");
+
+      const parseCSVRow = (row: string): string[] => {
+        const result: string[] = [];
+        let current = "";
+        let inQuotes = false;
+        for (let i = 0; i < row.length; i++) {
+          if (row[i] === '"') {
+            if (inQuotes && row[i + 1] === '"') { current += '"'; i++; }
+            else inQuotes = !inQuotes;
+          } else if (row[i] === "," && !inQuotes) {
+            result.push(current.trim()); current = "";
+          } else {
+            current += row[i];
+          }
+        }
+        result.push(current.trim());
+        return result;
+      };
+
+      const headers = parseCSVRow(lines[0]);
+      const rows = lines.slice(1).map((line) => {
+        const values = parseCSVRow(line);
+        return headers.reduce((acc, header, idx) => {
+          (acc as any)[header.trim()] = values[idx] ?? "";
+          return acc;
+        }, {} as any);
+      });
+
+      const toInsert = rows.map((r) => ({
+        name: r.name,
+        slug: r.slug || r.name?.toLowerCase().replace(/\s+/g, "-"),
+        price: parseFloat(r.price) || 0,
+        category_slug: r.category_slug || "shalwar-kameez",
+        image_url: r.image_url || "https://via.placeholder.com/400x500",
+        description: r.description || null,
+        is_active: r.is_active === "false" ? false : true,
+      }));
+
+      const { error } = await supabase.from("products").insert(toInsert);
+      if (error) throw error;
+
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      toast.success(`Imported ${toInsert.length} products successfully`);
+    } catch (err: any) {
+      toast.error(err.message || "Import failed");
+    } finally {
+      setImportLoading(false);
+      if (importInputRef.current) importInputRef.current.value = "";
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold font-playfair">Products</h1>
-          <p className="text-muted-foreground mt-1">Manage your product catalog</p>
+          <p className="text-muted-foreground mt-1">Manage your product catalog ({products?.length ?? 0} products)</p>
         </div>
-        <Dialog open={open} onOpenChange={handleOpenChange}>
-          <DialogTrigger asChild>
-            <Button><Plus className="mr-2 h-4 w-4" /> Add Product</Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{editingId ? "Edit Product" : "Add New Product"}</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Product Name *</Label>
-                <Input
-                  id="name"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="Royal Navy Waistcoat"
-                  required
-                />
-              </div>
+        <div className="flex flex-wrap gap-2">
+          {/* Export CSV */}
+          <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+            <FileDown className="h-4 w-4" /> Export CSV
+          </Button>
 
-              <div className="space-y-2">
-                <Label htmlFor="slug">URL Slug</Label>
-                <Input
-                  id="slug"
-                  value={form.slug}
-                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                  placeholder="royal-navy-waistcoat (auto-generated if empty)"
-                />
-              </div>
+          {/* Import CSV */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => importInputRef.current?.click()}
+            disabled={importLoading}
+            className="gap-2"
+          >
+            {importLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileUp className="h-4 w-4" />}
+            Import CSV
+          </Button>
+          <input
+            ref={importInputRef}
+            type="file"
+            accept=".csv"
+            className="hidden"
+            onChange={(e) => e.target.files?.[0] && handleImport(e.target.files[0])}
+          />
 
-              <div className="grid grid-cols-2 gap-4">
+          {/* Add Product */}
+          <Dialog open={open} onOpenChange={handleOpenChange}>
+            <DialogTrigger asChild>
+              <Button size="sm" className="gap-2"><Plus className="h-4 w-4" /> Add Product</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>{editingId ? "Edit Product" : "Add New Product"}</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+                {/* Image Upload */}
                 <div className="space-y-2">
-                  <Label htmlFor="price">Price (PKR) *</Label>
+                  <Label>Product Image *</Label>
+                  <div className="flex gap-3 items-start">
+                    {/* Image preview / placeholder */}
+                    <div
+                      className="relative w-24 h-24 border-2 border-dashed border-border rounded-lg overflow-hidden flex items-center justify-center bg-muted cursor-pointer hover:border-primary transition-colors shrink-0"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      {imageUploading ? (
+                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                      ) : form.image_url ? (
+                        <img
+                          src={form.image_url}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => (e.currentTarget.style.display = "none")}
+                        />
+                      ) : (
+                        <ImagePlus className="h-6 w-6 text-muted-foreground" />
+                      )}
+                      <div className="absolute inset-0 bg-background/50 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity">
+                        <Upload className="h-4 w-4" />
+                      </div>
+                    </div>
+
+                    <div className="flex-1 space-y-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={imageUploading}
+                      >
+                        <Upload className="h-4 w-4" />
+                        {imageUploading ? "Uploading..." : "Upload Image"}
+                      </Button>
+                      <p className="text-[10px] text-muted-foreground">JPG, PNG, WebP. Or paste a URL below.</p>
+                      <Input
+                        value={form.image_url}
+                        onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+                        placeholder="https://... (paste URL)"
+                        className="text-xs"
+                      />
+                    </div>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="name">Product Name *</Label>
                   <Input
-                    id="price"
-                    type="number"
-                    value={form.price}
-                    onChange={(e) => setForm({ ...form, price: e.target.value })}
-                    placeholder="8500"
+                    id="name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    placeholder="Royal Navy Waistcoat"
                     required
                   />
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="category">Category *</Label>
-                  <Select
-                    value={form.category_slug}
-                    onValueChange={(value) => setForm({ ...form, category_slug: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat.slug} value={cat.slug}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="image_url">Image URL *</Label>
-                <Input
-                  id="image_url"
-                  value={form.image_url}
-                  onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-                  placeholder="https://..."
-                  required
-                />
-                {form.image_url && (
-                  <img
-                    src={form.image_url}
-                    alt="Preview"
-                    className="w-20 h-20 rounded object-cover mt-2"
-                    onError={(e) => (e.currentTarget.style.display = "none")}
+                  <Label htmlFor="slug">URL Slug</Label>
+                  <Input
+                    id="slug"
+                    value={form.slug}
+                    onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                    placeholder="auto-generated if empty"
                   />
-                )}
-              </div>
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  placeholder="Product description..."
-                  rows={3}
-                />
-              </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="price">Price (PKR) *</Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      value={form.price}
+                      onChange={(e) => setForm({ ...form, price: e.target.value })}
+                      placeholder="8500"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="category">Category *</Label>
+                    <Select
+                      value={form.category_slug}
+                      onValueChange={(value) => setForm({ ...form, category_slug: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((cat) => (
+                          <SelectItem key={cat.slug} value={cat.slug}>{cat.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
 
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is_active"
-                  checked={form.is_active}
-                  onCheckedChange={(checked) => setForm({ ...form, is_active: checked })}
-                />
-                <Label htmlFor="is_active">Active (visible to customers)</Label>
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    placeholder="Product description..."
+                    rows={3}
+                  />
+                </div>
 
-              <Button type="submit" className="w-full" disabled={createProduct.isPending || updateProduct.isPending}>
-                {editingId ? "Update Product" : "Create Product"}
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_active"
+                    checked={form.is_active}
+                    onCheckedChange={(checked) => setForm({ ...form, is_active: checked })}
+                  />
+                  <Label htmlFor="is_active">Active (visible to customers)</Label>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={createProduct.isPending || updateProduct.isPending || imageUploading}
+                >
+                  {editingId ? "Update Product" : "Create Product"}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
-      
+
+      {/* CSV template hint */}
+      <div className="bg-muted/40 border border-border rounded-lg p-3 text-xs text-muted-foreground">
+        <strong className="text-foreground">CSV Import format:</strong> Headers must be:{" "}
+        <code className="bg-muted px-1 rounded">name, slug, price, category_slug, image_url, description, is_active</code>
+        <span className="ml-2 text-primary cursor-pointer hover:underline" onClick={handleExport}>
+          Export existing products as template →
+        </span>
+      </div>
+
       <div className="rounded-md border bg-card">
         <Table>
           <TableHeader>
@@ -267,27 +456,31 @@ export default function AdminProducts() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">Loading...</TableCell>
+                <TableCell colSpan={6} className="text-center py-8">
+                  <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+                </TableCell>
               </TableRow>
             ) : products?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                  No products yet. Click "Add Product" to create one.
+                  No products yet. Click "Add Product" or import a CSV.
                 </TableCell>
               </TableRow>
             ) : (
               products?.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell>
-                    <img 
-                      src={product.image_url} 
-                      alt={product.name} 
-                      className="w-12 h-12 rounded object-cover"
-                      onError={(e) => (e.currentTarget.src = "/placeholder.svg")} 
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-12 h-14 rounded object-cover"
+                      onError={(e) => (e.currentTarget.src = "/placeholder.svg")}
                     />
                   </TableCell>
                   <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell className="capitalize">{product.category_slug.replace("-", " ")}</TableCell>
+                  <TableCell className="capitalize text-sm text-muted-foreground">
+                    {categories.find(c => c.slug === product.category_slug)?.name ?? product.category_slug}
+                  </TableCell>
                   <TableCell>Rs. {Number(product.price).toLocaleString()}</TableCell>
                   <TableCell>
                     <Badge variant={product.is_active ? 'default' : 'secondary'}>
@@ -299,9 +492,9 @@ export default function AdminProducts() {
                       <Button size="sm" variant="outline" onClick={() => handleEdit(product)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        size="sm" 
-                        variant="destructive" 
+                      <Button
+                        size="sm"
+                        variant="destructive"
                         onClick={() => deleteProduct.mutate(product.id)}
                         disabled={deleteProduct.isPending}
                       >
