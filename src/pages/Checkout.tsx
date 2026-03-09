@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
-import { ChevronLeft, CreditCard, Banknote, Percent } from "lucide-react";
+import { ChevronLeft, CreditCard, Banknote, Percent, TrendingUp } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
@@ -11,8 +13,12 @@ import CartDrawer from "@/components/CartDrawer";
 
 const Checkout = () => {
   const { items, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState<"full" | "advance">("advance");
+  const [isPartner, setIsPartner] = useState(false);
+  const [isReselling, setIsReselling] = useState(false);
+  const [profitAmount, setProfitAmount] = useState<number>(0);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -22,11 +28,19 @@ const Checkout = () => {
     notes: "",
   });
 
+  useEffect(() => {
+    if (user) {
+      supabase.from("partner_applications").select("status").eq("user_id", user.id).eq("status", "approved").maybeSingle()
+        .then(({ data }) => setIsPartner(!!data));
+    }
+  }, [user]);
+
   const subtotal = items.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/[^0-9]/g, ""));
     return sum + price * item.quantity;
   }, 0);
 
+  const customerTotal = isReselling ? subtotal + profitAmount : subtotal;
   const advanceAmount = Math.ceil(subtotal * 0.25);
   const remainingAmount = subtotal - advanceAmount;
   const payableNow = paymentMethod === "advance" ? advanceAmount : subtotal;
@@ -39,11 +53,14 @@ const Checkout = () => {
     e.preventDefault();
 
     const orderLines = items.map((i) => `• ${i.name} x${i.quantity} — ${i.price}`).join("\n");
+    const resellerInfo = isReselling && profitAmount > 0
+      ? `\n📊 Reseller Order — Profit: PKR ${profitAmount.toLocaleString()} | Customer Price: PKR ${customerTotal.toLocaleString()}`
+      : "";
     const paymentInfo = paymentMethod === "advance"
       ? `\n💰 Payment: 25% Advance (PKR ${advanceAmount.toLocaleString()})\n💳 Remaining: PKR ${remainingAmount.toLocaleString()} (COD)`
       : `\n💰 Payment: Full (PKR ${subtotal.toLocaleString()})`;
 
-    const message = `🛒 *New Order — Signature Stitch*\n\n👤 ${formData.name}\n📞 ${formData.phone}\n📧 ${formData.email}\n📍 ${formData.address}, ${formData.city}\n\n*Order:*\n${orderLines}\n\n*Total: PKR ${subtotal.toLocaleString()}*${paymentInfo}${formData.notes ? `\n\n📝 Notes: ${formData.notes}` : ""}`;
+    const message = `🛒 *New Order — Signature Stitch*\n\n👤 ${formData.name}\n📞 ${formData.phone}\n📧 ${formData.email}\n📍 ${formData.address}, ${formData.city}\n\n*Order:*\n${orderLines}\n\n*Total: PKR ${subtotal.toLocaleString()}*${resellerInfo}${paymentInfo}${formData.notes ? `\n\n📝 Notes: ${formData.notes}` : ""}`;
 
     const whatsAppUrl = `https://wa.me/923205719979?text=${encodeURIComponent(message)}`;
     window.open(whatsAppUrl, "_blank");
@@ -158,9 +175,55 @@ const Checkout = () => {
                 </button>
               </div>
             </div>
+
+            {/* Reseller Profit Section — only for approved partners */}
+            {isPartner && (
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp size={18} className="text-primary" />
+                    <h2 className="font-heading text-lg font-semibold">Reseller Profit</h2>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setIsReselling(!isReselling); if (isReselling) setProfitAmount(0); }}
+                    className={`relative w-10 h-5 rounded-full transition-colors ${isReselling ? "bg-primary" : "bg-muted"}`}
+                  >
+                    <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-primary-foreground transition-transform ${isReselling ? "translate-x-5" : ""}`} />
+                  </button>
+                </div>
+                {isReselling ? (
+                  <div className="space-y-3">
+                    <p className="text-xs text-muted-foreground font-body">
+                      Set your profit margin. This amount will be added to the customer's price.
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-body text-muted-foreground">PKR</span>
+                      <Input
+                        type="number"
+                        value={profitAmount || ""}
+                        onChange={(e) => setProfitAmount(Number(e.target.value))}
+                        placeholder="e.g. 500"
+                        className="bg-secondary border-border font-body"
+                      />
+                    </div>
+                    {profitAmount > 0 && (
+                      <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-xs font-body space-y-1">
+                        <div className="flex justify-between"><span className="text-muted-foreground">Base Price</span><span>PKR {subtotal.toLocaleString()}</span></div>
+                        <div className="flex justify-between text-primary"><span>Your Profit</span><span>+PKR {profitAmount.toLocaleString()}</span></div>
+                        <div className="flex justify-between font-semibold border-t border-border pt-1 mt-1"><span>Customer Pays</span><span>PKR {customerTotal.toLocaleString()}</span></div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground font-body">
+                    Buying for yourself? Leave this off. Toggle on to set a resale profit margin.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Order Summary */}
           <div className="lg:col-span-2">
             <div className="bg-card rounded-lg p-6 border border-border sticky top-24">
               <h2 className="font-heading text-lg font-semibold mb-4">Order Summary</h2>
