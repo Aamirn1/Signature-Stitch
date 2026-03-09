@@ -11,7 +11,7 @@ export interface CustomizationOptions {
 
 export const EXTRA_CHARGES = {
   fancyButtons: 300,
-  doublePleat: 200,
+  doublePleat: 600,
 };
 
 export const getExtraCharges = (options: CustomizationOptions): number => {
