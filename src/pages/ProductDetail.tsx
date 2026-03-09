@@ -348,7 +348,7 @@ const ProductDetail = () => {
               </div>
               <div className="text-center">
                 <motion.div
-                  animate={{ rotate: 360 }}
+                  animate={{ rotate: -360 }}
                   transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                   className="mx-auto w-fit mb-2"
                 >
