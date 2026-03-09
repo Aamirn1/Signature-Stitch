@@ -93,20 +93,65 @@ const Payment = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="pt-32 pb-20 section-padding max-w-lg mx-auto text-center">
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", damping: 15 }}>
-            <CheckCircle size={64} className="text-primary mx-auto mb-6" />
+        <div className="pt-28 pb-20 section-padding max-w-lg mx-auto">
+          {/* Animated success header */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", damping: 15 }}
+            className="text-center mb-8"
+          >
+            <motion.div
+              className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/20 border-2 border-primary mb-5"
+              animate={{
+                boxShadow: [
+                  "0 0 0px hsl(var(--gold) / 0)",
+                  "0 0 40px hsl(var(--gold) / 0.4)",
+                  "0 0 0px hsl(var(--gold) / 0)",
+                ],
+              }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <CheckCircle size={36} className="text-primary" />
+            </motion.div>
+            <h1 className="font-heading text-2xl font-bold mb-2">Payment Submitted!</h1>
+            <p className="text-muted-foreground font-body text-sm">
+              Your order is being processed. Here's what happens next:
+            </p>
           </motion.div>
-          <h1 className="font-heading text-3xl font-bold mb-4">Payment Submitted!</h1>
-          <p className="text-muted-foreground font-body mb-2">
-            Your order has been placed and payment screenshot received.
-          </p>
-          <p className="text-muted-foreground font-body mb-8 text-sm">
+
+          {/* Order Tracking Steps */}
+          <OrderTrackingSteps currentStep={0} orderDate={new Date().toISOString()} />
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2 }}
+            className="mt-8 space-y-3"
+          >
+            <Button
+              onClick={() => navigate("/my-orders")}
+              className="w-full bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase hover:opacity-90"
+            >
+              View My Orders
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate("/")}
+              className="w-full font-body tracking-widest uppercase"
+            >
+              Back to Home
+            </Button>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.5 }}
+            className="text-[10px] text-muted-foreground font-body text-center mt-4"
+          >
             We will verify your payment and confirm your order via WhatsApp shortly.
-          </p>
-          <Button onClick={() => navigate("/")} className="bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase hover:opacity-90">
-            Back to Home
-          </Button>
+          </motion.p>
         </div>
         <Footer />
       </div>

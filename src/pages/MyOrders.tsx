@@ -61,12 +61,14 @@ const MyOrders = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <CartDrawer />
-      <BackButton />
 
       <div className="pt-20 lg:pt-24 section-padding max-w-4xl mx-auto pb-20">
-        <h1 className="font-heading text-3xl lg:text-4xl font-bold mb-8 mt-4">
-          <span className="text-gold-gradient">My Orders</span>
-        </h1>
+        <div className="flex items-center gap-3 mt-4 mb-8">
+          <BackButton />
+          <h1 className="font-heading text-3xl lg:text-4xl font-bold">
+            <span className="text-gold-gradient">My Orders</span>
+          </h1>
+        </div>
 
         {fetching ? (
           <div className="text-center py-20">
