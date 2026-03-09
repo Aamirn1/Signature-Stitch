@@ -267,11 +267,17 @@ const Checkout = () => {
               <h2 className="font-heading text-lg font-semibold mb-4">Order Summary</h2>
               <div className="space-y-3 mb-6">
                 {items.map((item) => (
-                  <div key={`${item.id}-${item.measurementId || ''}`} className="flex items-center gap-3">
+                  <div key={`${item.id}-${item.measurementId || ''}-${item.customization?.clothType || ''}`} className="flex items-center gap-3">
                     <img src={item.image} alt={item.name} className="w-14 h-16 object-cover rounded" />
                     <div className="flex-1 min-w-0">
                       <p className="font-body text-xs font-semibold truncate">{item.name}</p>
                       <p className="text-xs text-muted-foreground font-body">Qty: {item.quantity}</p>
+                      {item.customization && (
+                        <p className="text-[10px] text-muted-foreground font-body">
+                          {item.customization.clothType === "stitched" ? "Stitched" : "Unstitched"}
+                          {item.customization.clothType === "stitched" && ` • ${item.customization.collarType === "collar" ? "Collar" : "Cuff"} • ${item.customization.flareType === "circular" ? "Circular" : "Slit"}`}
+                        </p>
+                      )}
                       {item.measurementLabel && (
                         <p className="text-[10px] text-muted-foreground font-body">📐 {item.measurementLabel}</p>
                       )}
