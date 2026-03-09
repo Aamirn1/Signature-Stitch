@@ -28,6 +28,7 @@ import BlogPost from "./pages/BlogPost";
 import Collections from "./pages/Collections";
 import About from "./pages/About";
 import Payment from "./pages/Payment";
+import MyOrders from "./pages/MyOrders";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -63,6 +64,7 @@ const AnimatedRoutes = () => {
           <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
           <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
           <Route path="/partner" element={<PageTransition><PartnerDashboard /></PageTransition>} />
+          <Route path="/my-orders" element={<PageTransition><MyOrders /></PageTransition>} />
           <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
           <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
