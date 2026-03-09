@@ -306,15 +306,33 @@ const ProductDetail = () => {
             {/* Trust signals */}
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border">
               <div className="text-center">
-                <Truck size={20} className="mx-auto text-primary mb-2" />
+                <motion.div
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="mx-auto w-fit mb-2"
+                >
+                  <Truck size={20} className="text-primary" />
+                </motion.div>
                 <p className="text-[10px] font-body text-muted-foreground uppercase tracking-wider">Free Shipping</p>
               </div>
               <div className="text-center">
-                <Shield size={20} className="mx-auto text-primary mb-2" />
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="mx-auto w-fit mb-2"
+                >
+                  <Shield size={20} className="text-primary" />
+                </motion.div>
                 <p className="text-[10px] font-body text-muted-foreground uppercase tracking-wider">Secure Payment</p>
               </div>
               <div className="text-center">
-                <RotateCcw size={20} className="mx-auto text-primary mb-2" />
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  className="mx-auto w-fit mb-2"
+                >
+                  <RotateCcw size={20} className="text-primary" />
+                </motion.div>
                 <p className="text-[10px] font-body text-muted-foreground uppercase tracking-wider">Easy Returns</p>
               </div>
             </div>
