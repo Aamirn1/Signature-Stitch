@@ -40,6 +40,7 @@ const Checkout = () => {
     return sum + price * item.quantity;
   }, 0);
 
+  const customerTotal = isReselling ? subtotal + profitAmount : subtotal;
   const advanceAmount = Math.ceil(subtotal * 0.25);
   const remainingAmount = subtotal - advanceAmount;
   const payableNow = paymentMethod === "advance" ? advanceAmount : subtotal;
