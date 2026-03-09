@@ -37,29 +37,31 @@ const HeroSection = () => {
 
         <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
           <span className="whitespace-nowrap">
-            {words1.map((word, i) => (
+            {line1.split("").map((char, i) => (
               <motion.span
-                key={`w-${i}`}
-                custom={i}
-                variants={wordVariants}
-                initial="hidden"
-                animate="visible"
-                className="inline-block mr-[0.3em]"
+                key={`c1-${i}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: startDelay + i * charDelay, duration: 0.05 }}
+                className="inline-block"
+                style={{ width: char === " " ? "0.3em" : undefined }}
               >
-                {word}
+                {char === " " ? "\u00A0" : char}
               </motion.span>
             ))}
           </span>
           <span className="block text-foreground pb-3">
-            <motion.span
-              custom={words1.length}
-              variants={wordVariants}
-              initial="hidden"
-              animate="visible"
-              className="inline-block"
-            >
-              {word2}
-            </motion.span>
+            {line2.split("").map((char, i) => (
+              <motion.span
+                key={`c2-${i}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: startDelay + (line1.length + 1) * charDelay + i * charDelay, duration: 0.05 }}
+                className="inline-block"
+              >
+                {char}
+              </motion.span>
+            ))}
           </span>
         </h1>
 
