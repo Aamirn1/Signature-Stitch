@@ -1,7 +1,14 @@
 import { createPortal } from "react-dom";
 import { MessageCircle } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { useCart } from "@/hooks/useCart";
 
 const WhatsAppButton = () => {
+  const { isOpen } = useCart();
+  const { pathname } = useLocation();
+
+  if (isOpen || pathname === "/checkout") return null;
+
   return createPortal(
     <a
       href="https://wa.me/923205719979"

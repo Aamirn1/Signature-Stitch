@@ -34,28 +34,28 @@ const TrustIconAnimated = ({ type }: { type: string }) => {
       );
     case "truck":
       return (
-        <div className="relative flex items-center justify-center">
+        <div className="relative flex items-center justify-center w-full h-full">
           <motion.div
-            animate={{ x: [0, 3, 0], opacity: [0.3, 0.8, 0.3] }}
+            animate={{ x: [0, 2, 0], opacity: [0.3, 0.8, 0.3] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -left-4 flex flex-col gap-1"
+            className="absolute left-1 flex flex-col gap-0.5"
           >
-            <div className="w-2 h-0.5 bg-primary/60 rounded"></div>
-            <div className="w-3 h-0.5 bg-primary/40 rounded"></div>
-            <div className="w-2 h-0.5 bg-primary/60 rounded"></div>
+            <div className="w-1.5 h-0.5 bg-primary/60 rounded"></div>
+            <div className="w-2 h-0.5 bg-primary/40 rounded"></div>
+            <div className="w-1.5 h-0.5 bg-primary/60 rounded"></div>
           </motion.div>
           <motion.div
-            animate={{ x: [0, 3, 0] }}
+            animate={{ x: [0, 2, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
-            <Truck size={22} className="text-primary" />
+            <Truck size={20} className="text-primary" />
           </motion.div>
         </div>
       );
     case "returns":
       return (
         <motion.div
-          animate={{ rotate: 360 }}
+          animate={{ rotate: -360 }}
           transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
         >
           <RotateCcw size={22} className="text-primary" />
@@ -97,7 +97,7 @@ const TrustPanel = () => {
               <motion.div
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 border border-primary/30 mb-4 shadow-[0_0_20px_hsl(var(--gold)/0.15)]"
+                className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 border border-primary/30 mb-4 shadow-[0_0_20px_hsl(var(--gold)/0.15)] overflow-hidden"
               >
                 <TrustIconAnimated type={item.type} />
               </motion.div>
