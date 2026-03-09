@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingBag, Star, Minus, Plus, Truck, Shield, RotateCcw, ZoomIn, Ruler, AlertCircle } from "lucide-react";
+import { ShoppingBag, Star, Minus, Plus, Truck, Shield, RotateCcw, ZoomIn, Ruler, AlertCircle, Check } from "lucide-react";
 import { getProductById } from "@/data/products";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
