@@ -67,9 +67,7 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const [partnerStatus, setPartnerStatus] = useState<string | null>(null);
 
-  // Partner application form
-  const [showPartnerForm, setShowPartnerForm] = useState(false);
-  const [partnerForm, setPartnerForm] = useState({ business_name: "", phone: "", city: "", reason: "" });
+  const [converting, setConverting] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -180,27 +178,22 @@ const Profile = () => {
     setPartnerStatus(data?.status ?? null);
   };
 
-  const applyAsPartner = async () => {
-    if (!partnerForm.business_name || !partnerForm.phone || !partnerForm.city) {
-      toast.error("Please fill all required fields");
-      return;
-    }
-    setSaving(true);
+  const convertToPartner = async () => {
+    setConverting(true);
     const { error } = await supabase.from("partner_applications").insert({
       user_id: user!.id,
-      business_name: partnerForm.business_name,
-      phone: partnerForm.phone,
-      city: partnerForm.city,
-      reason: partnerForm.reason,
+      business_name: profile.full_name || "Partner",
+      phone: profile.phone || "",
+      city: "",
+      status: "approved",
     });
-    setSaving(false);
+    setConverting(false);
     if (error) {
-      toast.error("Application failed. You may have already applied.");
+      toast.error("Conversion failed. You may already be a partner.");
       return;
     }
-    toast.success("Partner application submitted!");
-    setShowPartnerForm(false);
-    setPartnerStatus("pending");
+    toast.success("You're now a partner! Access your dashboard to start reselling.");
+    setPartnerStatus("approved");
   };
 
   const handleSignOut = async () => {
