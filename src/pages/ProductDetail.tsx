@@ -17,7 +17,7 @@ import RelatedProducts from "@/components/RelatedProducts";
 import ImageZoomModal from "@/components/ImageZoomModal";
 import BackButton from "@/components/BackButton";
 import SEOHead from "@/components/SEOHead";
-import ProductCustomization, { CustomizationOptions, getExtraCharges } from "@/components/ProductCustomization";
+import ProductCustomization, { CustomizationOptions, getExtraCharges, getDefaultOptions, Category } from "@/components/ProductCustomization";
 
 interface Measurement {
   id: string;
@@ -42,15 +42,19 @@ const ProductDetail = () => {
   const [zoomOpen, setZoomOpen] = useState(false);
   const [showMeasurementWarning, setShowMeasurementWarning] = useState(false);
   
-  // Default customization based on category
-  const isWaistcoat = product?.categorySlug === "waistcoats";
-  const [customization, setCustomization] = useState<CustomizationOptions>({
-    clothType: "stitched",
-    collarType: isWaistcoat ? "cuff" : "collar",
-    buttonType: isWaistcoat ? "fancy" : "simple",
-    flareType: isWaistcoat ? "slit" : "circular",
-    pleatType: "single",
-  });
+  // Category mapping and defaults
+  const categorySlugToCategory = (slug: string): Category => {
+    if (slug === "shalwar-kameez") return "shalwar-kameez";
+    if (slug === "waistcoats") return "waistcoats";
+    if (slug === "3-piece") return "3-piece";
+    if (slug === "trousers") return "trousers";
+    return "shalwar-kameez"; // fallback
+  };
+
+  const category = categorySlugToCategory(product?.categorySlug || "");
+  const [customization, setCustomization] = useState<CustomizationOptions>(() => 
+    getDefaultOptions(category)
+  );
 
   useEffect(() => {
     if (user) fetchMeasurements();
@@ -80,7 +84,7 @@ const ProductDetail = () => {
     );
   }
 
-  const extraCharges = getExtraCharges(customization);
+  const extraCharges = getExtraCharges(customization, category);
   const totalPrice = product.price + extraCharges;
   const totalPriceFormatted = `PKR ${totalPrice.toLocaleString()}`;
 
@@ -103,9 +107,9 @@ const ProductDetail = () => {
       name: product.name,
       price: totalPriceFormatted,
       image: product.images[0],
-      measurementId: customization.clothType === "stitched" ? selectedMeasurement?.id : undefined,
-      measurementLabel: customization.clothType === "stitched" ? selectedMeasurement?.label : undefined,
-      customization,
+      measurementId: (customization as any).clothType === "stitched" ? selectedMeasurement?.id : undefined,
+      measurementLabel: (customization as any).clothType === "stitched" ? selectedMeasurement?.label : undefined,
+      customization: customization as any, // Convert to flexible record type
       extraCharges,
     }, quantity);
   };
@@ -224,10 +228,10 @@ const ProductDetail = () => {
             </div>
 
             {/* Customization Options */}
-            <ProductCustomization options={customization} onChange={setCustomization} />
+            <ProductCustomization options={customization} onChange={setCustomization} category={category} />
 
             {/* Custom Measurements Section - only for stitched */}
-            {customization.clothType === "stitched" && (
+            {(customization as any).clothType === "stitched" && (
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-xs font-body tracking-wider uppercase text-muted-foreground">Your Measurements</p>
