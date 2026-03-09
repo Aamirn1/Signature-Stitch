@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
-import { ChevronLeft, CreditCard, Banknote, Percent, TrendingUp } from "lucide-react";
+import { ChevronLeft, Banknote, Percent, TrendingUp, Loader2 } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import { toast } from "sonner";
 
 const Checkout = () => {
   const { items, clearCart } = useCart();
@@ -19,6 +19,7 @@ const Checkout = () => {
   const [isPartner, setIsPartner] = useState(false);
   const [isReselling, setIsReselling] = useState(false);
   const [profitAmount, setProfitAmount] = useState<number>(0);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -49,23 +50,56 @@ const Checkout = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
 
-    const orderLines = items.map((i) => `• ${i.name} x${i.quantity} — ${i.price}`).join("\n");
-    const resellerInfo = isReselling && profitAmount > 0
-      ? `\n📊 Reseller Order — Profit: PKR ${profitAmount.toLocaleString()} | Customer Price: PKR ${customerTotal.toLocaleString()}`
-      : "";
-    const paymentInfo = paymentMethod === "advance"
-      ? `\n💰 Payment: 25% Advance (PKR ${advanceAmount.toLocaleString()})\n💳 Remaining: PKR ${remainingAmount.toLocaleString()} (COD)`
-      : `\n💰 Payment: Full (PKR ${subtotal.toLocaleString()})`;
+    setSubmitting(true);
+    try {
+      const orderItems = items.map((i) => ({
+        id: i.id,
+        name: i.name,
+        price: i.price,
+        quantity: i.quantity,
+        measurementId: i.measurementId,
+        measurementLabel: i.measurementLabel,
+      }));
 
-    const message = `🛒 *New Order — Signature Stitch*\n\n👤 ${formData.name}\n📞 ${formData.phone}\n📧 ${formData.email}\n📍 ${formData.address}, ${formData.city}\n\n*Order:*\n${orderLines}\n\n*Total: PKR ${subtotal.toLocaleString()}*${resellerInfo}${paymentInfo}${formData.notes ? `\n\n📝 Notes: ${formData.notes}` : ""}`;
+      const { data, error } = await (supabase.from("orders") as any).insert({
+        user_id: user.id,
+        items: orderItems,
+        subtotal,
+        advance_amount: payableNow,
+        remaining_amount: paymentMethod === "advance" ? remainingAmount : 0,
+        payment_method: paymentMethod,
+        customer_name: formData.name,
+        customer_phone: formData.phone,
+        customer_email: formData.email || null,
+        customer_address: formData.address,
+        customer_city: formData.city,
+        notes: formData.notes || null,
+        is_reseller: isReselling,
+        profit_amount: isReselling ? profitAmount : 0,
+      }).select("id").single();
 
-    const whatsAppUrl = `https://wa.me/923205719979?text=${encodeURIComponent(message)}`;
-    window.open(whatsAppUrl, "_blank");
-    clearCart();
-    navigate("/");
+      if (error) throw error;
+
+      clearCart();
+      navigate("/payment", {
+        state: {
+          orderId: data.id,
+          advanceAmount: payableNow,
+          subtotal,
+        },
+      });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to place order");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (items.length === 0) {
@@ -176,7 +210,7 @@ const Checkout = () => {
               </div>
             </div>
 
-            {/* Reseller Profit Section — only for approved partners */}
+            {/* Reseller Profit Section */}
             {isPartner && (
               <div className="bg-card rounded-lg p-6 border border-border">
                 <div className="flex items-center justify-between mb-4">
@@ -229,7 +263,7 @@ const Checkout = () => {
               <h2 className="font-heading text-lg font-semibold mb-4">Order Summary</h2>
               <div className="space-y-3 mb-6">
                 {items.map((item) => (
-                  <div key={item.id} className="flex items-center gap-3">
+                  <div key={`${item.id}-${item.measurementId || ''}`} className="flex items-center gap-3">
                     <img src={item.image} alt={item.name} className="w-14 h-16 object-cover rounded" />
                     <div className="flex-1 min-w-0">
                       <p className="font-body text-xs font-semibold truncate">{item.name}</p>
@@ -273,13 +307,18 @@ const Checkout = () => {
               <Button
                 type="submit"
                 size="lg"
+                disabled={submitting}
                 className="w-full mt-6 bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-sm py-6 hover:opacity-90"
               >
-                Place Order via WhatsApp
+                {submitting ? (
+                  <span className="flex items-center gap-2"><Loader2 size={18} className="animate-spin" /> Processing...</span>
+                ) : (
+                  "Pay Now"
+                )}
               </Button>
 
               <p className="text-[10px] text-muted-foreground font-body text-center mt-3">
-                Your order will be confirmed via WhatsApp. Payment details will be shared.
+                You'll be redirected to complete payment after placing your order.
               </p>
             </div>
           </div>
