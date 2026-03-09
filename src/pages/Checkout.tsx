@@ -175,7 +175,6 @@ const Checkout = () => {
                 </button>
               </div>
             </div>
-          </div>
 
             {/* Reseller Profit Section — only for approved partners */}
             {isPartner && (
