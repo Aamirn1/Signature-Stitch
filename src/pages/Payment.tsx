@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import BackButton from "@/components/BackButton";
 import { toast } from "sonner";
 
 const ACCOUNT_DETAILS = {
@@ -115,6 +116,7 @@ const Payment = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <BackButton />
       <div className="pt-20 lg:pt-24 section-padding max-w-lg mx-auto pb-20">
         <Link to="/checkout" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary font-body mb-6 mt-4 transition-colors">
           <ChevronLeft size={16} /> Back to Checkout

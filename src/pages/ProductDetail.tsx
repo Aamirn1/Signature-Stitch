@@ -15,6 +15,7 @@ import AIChatAssistant from "@/components/AIChatAssistant";
 import ScrollToTop from "@/components/ScrollToTop";
 import RelatedProducts from "@/components/RelatedProducts";
 import ImageZoomModal from "@/components/ImageZoomModal";
+import BackButton from "@/components/BackButton";
 import SEOHead from "@/components/SEOHead";
 
 interface Measurement {
@@ -127,6 +128,7 @@ const ProductDetail = () => {
       />
       <Navbar />
       <CartDrawer />
+      <BackButton />
 
       <div className="pt-20 lg:pt-24 section-padding max-w-7xl mx-auto">
         {/* Breadcrumb */}
