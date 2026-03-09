@@ -167,10 +167,26 @@ const Navbar = () => {
                     </Link>
                   </motion.div>
                 ))}
+                {role === 'admin' && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: navLinks.length * 0.1 }}
+                  >
+                    <Link
+                      to="/admin"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center justify-between py-3 px-4 rounded-xl text-sm font-body tracking-widest uppercase text-primary hover:bg-primary/10 transition-all duration-200"
+                    >
+                      <span className="flex items-center gap-2"><Shield size={16} /> Admin</span>
+                      <ChevronRight size={16} className="text-muted-foreground" />
+                    </Link>
+                  </motion.div>
+                )}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: navLinks.length * 0.1 }}
+                  transition={{ delay: (navLinks.length + 1) * 0.1 }}
                 >
                   <Link
                     to="/faq"

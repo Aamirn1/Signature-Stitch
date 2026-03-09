@@ -50,7 +50,7 @@ const FoundersSection = () => {
                 />
               </motion.div>
               <h3 className="font-heading text-xl font-semibold mb-1">{founder.name}</h3>
-              <p className="text-foreground/70 text-sm font-body tracking-wider uppercase">{founder.role}</p>
+              <p className="text-primary text-sm font-body tracking-wider uppercase">{founder.role}</p>
               <p className="text-muted-foreground text-sm font-body mt-2 italic">{founder.tagline}</p>
             </motion.div>
           ))}
