@@ -27,6 +27,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Collections from "./pages/Collections";
 import About from "./pages/About";
+import Payment from "./pages/Payment";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -53,6 +54,7 @@ const AnimatedRoutes = () => {
           <Route path="/category/:slug" element={<PageTransition><Category /></PageTransition>} />
           <Route path="/product/:id" element={<PageTransition><ProductDetail /></PageTransition>} />
           <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
+          <Route path="/payment" element={<PageTransition><Payment /></PageTransition>} />
           <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
           <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
           <Route path="/return-policy" element={<PageTransition><ReturnPolicy /></PageTransition>} />

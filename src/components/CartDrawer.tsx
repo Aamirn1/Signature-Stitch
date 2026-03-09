@@ -5,7 +5,7 @@ import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/button";
 
 const CartDrawer = () => {
-  const { items, isOpen, toggleCart, removeItem, addItem } = useCart();
+  const { items, isOpen, toggleCart, removeItem, updateQuantity } = useCart();
   const navigate = useNavigate();
 
   const total = items.reduce((sum, item) => {
@@ -52,7 +52,7 @@ const CartDrawer = () => {
               ) : (
                 <div className="space-y-4">
                   {items.map((item) => (
-                    <div key={item.id} className="flex gap-4 p-3 rounded-lg bg-background/50">
+                    <div key={`${item.id}-${item.measurementId || ''}`} className="flex gap-4 p-3 rounded-lg bg-background/50">
                       <img src={item.image} alt={item.name} className="w-20 h-24 object-cover rounded" />
                       <div className="flex-1">
                         <h3 className="font-heading text-sm font-semibold">{item.name}</h3>
@@ -62,23 +62,21 @@ const CartDrawer = () => {
                         )}
                         <div className="flex items-center gap-3 mt-2">
                           <button
-                            onClick={() => {
-                              if (item.quantity <= 1) removeItem(item.id);
-                            }}
+                            onClick={() => updateQuantity(item.id, item.measurementId, -1)}
                             className="w-6 h-6 rounded bg-muted flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
                           >
                             <Minus size={12} />
                           </button>
                           <span className="text-sm font-body">{item.quantity}</span>
                           <button
-                            onClick={() => addItem({ id: item.id, name: item.name, price: item.price, image: item.image })}
+                            onClick={() => updateQuantity(item.id, item.measurementId, 1)}
                             className="w-6 h-6 rounded bg-muted flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
                           >
                             <Plus size={12} />
                           </button>
                         </div>
                       </div>
-                      <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-destructive transition-colors self-start">
+                      <button onClick={() => removeItem(item.id, item.measurementId)} className="text-muted-foreground hover:text-destructive transition-colors self-start">
                         <X size={16} />
                       </button>
                     </div>

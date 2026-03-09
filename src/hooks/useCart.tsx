@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
+import { toast } from "sonner";
 
 export interface CartItem {
   id: string;
@@ -12,8 +13,9 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, "quantity">) => void;
-  removeItem: (id: string) => void;
+  addItem: (item: Omit<CartItem, "quantity">, qty?: number) => void;
+  removeItem: (id: string, measurementId?: string) => void;
+  updateQuantity: (id: string, measurementId: string | undefined, delta: number) => void;
   toggleCart: () => void;
   isOpen: boolean;
   clearCart: () => void;
@@ -25,26 +27,42 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  const addItem = (item: Omit<CartItem, "quantity">) => {
+  const addItem = (item: Omit<CartItem, "quantity">, qty: number = 1) => {
     setItems((prev) => {
       const existing = prev.find((i) => i.id === item.id && i.measurementId === item.measurementId);
       if (existing) {
-        return prev.map((i) => (i.id === item.id && i.measurementId === item.measurementId ? { ...i, quantity: i.quantity + 1 } : i));
+        return prev.map((i) =>
+          i.id === item.id && i.measurementId === item.measurementId
+            ? { ...i, quantity: i.quantity + qty }
+            : i
+        );
       }
-      return [...prev, { ...item, quantity: 1 }];
+      return [...prev, { ...item, quantity: qty }];
     });
-    setIsOpen(true);
+    toast.success(`${item.name} added to cart`);
   };
 
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
+  const updateQuantity = (id: string, measurementId: string | undefined, delta: number) => {
+    setItems((prev) =>
+      prev
+        .map((i) =>
+          i.id === id && i.measurementId === measurementId
+            ? { ...i, quantity: i.quantity + delta }
+            : i
+        )
+        .filter((i) => i.quantity > 0)
+    );
+  };
+
+  const removeItem = (id: string, measurementId?: string) => {
+    setItems((prev) => prev.filter((i) => !(i.id === id && i.measurementId === measurementId)));
   };
 
   const toggleCart = () => setIsOpen((prev) => !prev);
   const clearCart = () => setItems([]);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, toggleCart, isOpen, clearCart }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, toggleCart, isOpen, clearCart }}>
       {children}
     </CartContext.Provider>
   );

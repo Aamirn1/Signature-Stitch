@@ -84,22 +84,18 @@ const ProductDetail = () => {
       return;
     }
 
-    for (let i = 0; i < quantity; i++) {
-      addItem({
-        id: product.id,
-        name: product.name,
-        price: product.priceFormatted,
-        image: product.images[0],
-        measurementId: selectedMeasurement.id,
-        measurementLabel: selectedMeasurement.label,
-      });
-    }
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.priceFormatted,
+      image: product.images[0],
+      measurementId: selectedMeasurement.id,
+      measurementLabel: selectedMeasurement.label,
+    }, quantity);
   };
 
   const goToProfile = () => navigate("/profile");
 
-  const whatsAppMessage = `Hi! I'm interested in ${product.name} (${product.priceFormatted}). Please share more details.`;
-  const whatsAppUrl = `https://wa.me/923205719979?text=${encodeURIComponent(whatsAppMessage)}`;
 
   return (
     <div className="min-h-screen bg-background">
@@ -287,19 +283,14 @@ const ProductDetail = () => {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-8">
+            <div className="mb-8">
               <Button
                 onClick={handleAddToCart}
                 size="lg"
                 disabled={!product.inStock}
-                className="flex-1 bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-sm py-6 hover:opacity-90 flex items-center gap-2"
+                className="w-full bg-gold-gradient text-primary-foreground font-body tracking-widest uppercase text-sm py-6 hover:opacity-90 flex items-center gap-2"
               >
                 <ShoppingBag size={18} /> Add to Cart
-              </Button>
-              <Button asChild size="lg" variant="outline" className="flex-1 border-primary text-primary font-body tracking-widest uppercase text-sm py-6 hover:bg-primary hover:text-primary-foreground">
-                <a href={whatsAppUrl} target="_blank" rel="noopener noreferrer">
-                  Order via WhatsApp
-                </a>
               </Button>
             </div>
 
