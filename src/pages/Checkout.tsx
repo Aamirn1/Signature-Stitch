@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import BackButton from "@/components/BackButton";
 import { toast } from "sonner";
 
 const Checkout = () => {
@@ -119,6 +120,7 @@ const Checkout = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <CartDrawer />
+      <BackButton />
 
       <div className="pt-20 lg:pt-24 section-padding max-w-5xl mx-auto pb-20">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary font-body mb-6 mt-4 transition-colors">
