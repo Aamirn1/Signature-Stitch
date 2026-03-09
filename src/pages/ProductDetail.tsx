@@ -180,12 +180,15 @@ const ProductDetail = () => {
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} size={16} className={i < Math.floor(product.rating) ? "fill-primary text-primary" : "text-muted-foreground"} />
                 ))}
-              </div>
-              <span className="text-sm text-muted-foreground font-body">{product.rating} Rating</span>
-            </div>
+             </div>
+             <span className="text-sm text-muted-foreground font-body">{product.rating} Rating</span>
+           </div>
 
-            <p className="text-gold-gradient font-body text-3xl font-bold mb-2">{product.priceFormatted}</p>
-            <p className="text-xs text-muted-foreground font-body mb-6">25% advance required for COD orders</p>
+           <p className="text-gold-gradient text-3xl font-bold mb-2">
+             <span className="font-heading tracking-wide">PKR</span>{" "}
+             <span className="font-body">{product.priceFormatted.replace(/^PKR\s+/, "")}</span>
+           </p>
+           <p className="text-xs text-muted-foreground font-body mb-6">25% advance required for COD orders</p>
 
             <p className="text-muted-foreground font-body text-sm leading-relaxed mb-6">{product.description}</p>
 
