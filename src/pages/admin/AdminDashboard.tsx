@@ -27,12 +27,12 @@ export default function AdminDashboard() {
     queryKey: ["admin-stats"],
     queryFn: async () => {
       const [ordersReq, partnersReq, productsReq, payoutsReq] = await Promise.all([
-        supabase.from("orders").select("id, subtotal", { count: "exact" }),
+        supabase.from("orders").select("id, subtotal, status", { count: "exact" }),
         supabase.from("partner_applications").select("id", { count: "exact" }).eq("status", "approved"),
         supabase.from("products").select("id", { count: "exact" }).eq("is_active", true),
         supabase.from("partner_payouts").select("id, amount").eq("status", "pending"),
       ]);
-      const totalRevenue = ordersReq.data?.filter((o: any) => !['pending_payment', 'payment_uploaded', 'payment_submitted'].includes(o.status ?? '')).reduce((sum, o) => sum + Number(o.subtotal), 0) ?? 0;
+      const totalRevenue = ordersReq.data?.filter((o: any) => !['pending_payment', 'payment_uploaded', 'payment_submitted'].includes(o.status ?? '')).filter((o: any) => !['pending_payment', 'payment_uploaded', 'payment_submitted'].includes(o.status ?? '')).reduce((sum, o) => sum + Number(o.subtotal), 0) ?? 0;
       const pendingPayouts = payoutsReq.data?.reduce((sum, p) => sum + Number(p.amount), 0) ?? 0;
       return {
         orders: ordersReq.count ?? 0,
