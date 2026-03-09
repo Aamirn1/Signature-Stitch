@@ -1,12 +1,76 @@
 import { motion } from "framer-motion";
-import { Shield, Truck, RotateCcw, Award } from "lucide-react";
+import { Shield, Truck, RotateCcw, Award, Check } from "lucide-react";
 import AnimatedCounter from "@/components/AnimatedCounter";
 
+const TrustIconAnimated = ({ type }: { type: string }) => {
+  switch (type) {
+    case "award":
+      return (
+        <motion.div
+          animate={{ rotateY: [0, 360] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
+        >
+          <Award size={22} className="text-primary" />
+        </motion.div>
+      );
+    case "shield":
+      return (
+        <div className="relative">
+          <motion.div
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="relative"
+          >
+            <Shield size={22} className="text-primary" />
+            <motion.div
+              animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <Check size={9} className="text-primary" />
+            </motion.div>
+          </motion.div>
+        </div>
+      );
+    case "truck":
+      return (
+        <div className="relative flex items-center justify-center">
+          <motion.div
+            animate={{ x: [0, 3, 0], opacity: [0.3, 0.8, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -left-4 flex flex-col gap-1"
+          >
+            <div className="w-2 h-0.5 bg-primary/60 rounded"></div>
+            <div className="w-3 h-0.5 bg-primary/40 rounded"></div>
+            <div className="w-2 h-0.5 bg-primary/60 rounded"></div>
+          </motion.div>
+          <motion.div
+            animate={{ x: [0, 3, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Truck size={22} className="text-primary" />
+          </motion.div>
+        </div>
+      );
+    case "returns":
+      return (
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        >
+          <RotateCcw size={22} className="text-primary" />
+        </motion.div>
+      );
+    default:
+      return null;
+  }
+};
+
 const trustItems = [
-  { icon: Award, title: "Premium Quality", desc: "What you see is what you get" },
-  { icon: Shield, title: "Secure Shopping", desc: "100% safe & encrypted payments" },
-  { icon: Truck, title: "Fast Delivery", desc: "Nationwide shipping across Pakistan" },
-  { icon: RotateCcw, title: "Easy Returns", desc: "Hassle-free return policy" },
+  { type: "award", title: "Premium Quality", desc: "What you see is what you get" },
+  { type: "shield", title: "Secure Shopping", desc: "100% safe & encrypted payments" },
+  { type: "truck", title: "Fast Delivery", desc: "Nationwide shipping across Pakistan" },
+  { type: "returns", title: "Easy Returns", desc: "Hassle-free return policy" },
 ];
 
 const stats = [
@@ -35,7 +99,7 @@ const TrustPanel = () => {
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
                 className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 border border-primary/30 mb-4 shadow-[0_0_20px_hsl(var(--gold)/0.15)]"
               >
-                <item.icon size={22} className="text-primary" />
+                <TrustIconAnimated type={item.type} />
               </motion.div>
               <h3 className="font-heading text-base font-semibold mb-1">{item.title}</h3>
               <p className="text-xs text-muted-foreground font-body">{item.desc}</p>
