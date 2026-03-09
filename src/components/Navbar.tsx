@@ -23,6 +23,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const { items, toggleCart } = useCart();
   const { user } = useAuth();
+  const { data: role } = useRole();
   const location = useLocation();
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
