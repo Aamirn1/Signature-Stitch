@@ -17,6 +17,7 @@ import RelatedProducts from "@/components/RelatedProducts";
 import ImageZoomModal from "@/components/ImageZoomModal";
 import BackButton from "@/components/BackButton";
 import SEOHead from "@/components/SEOHead";
+import ProductCustomization, { CustomizationOptions, getExtraCharges } from "@/components/ProductCustomization";
 
 interface Measurement {
   id: string;
@@ -40,6 +41,13 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [zoomOpen, setZoomOpen] = useState(false);
   const [showMeasurementWarning, setShowMeasurementWarning] = useState(false);
+  const [customization, setCustomization] = useState<CustomizationOptions>({
+    clothType: "stitched",
+    collarType: "collar",
+    buttonType: "simple",
+    flareType: "circular",
+    pleatType: "single",
+  });
 
   useEffect(() => {
     if (user) fetchMeasurements();
@@ -69,34 +77,37 @@ const ProductDetail = () => {
     );
   }
 
+  const extraCharges = getExtraCharges(customization);
+  const totalPrice = product.price + extraCharges;
+  const totalPriceFormatted = `PKR ${totalPrice.toLocaleString()}`;
+
   const handleAddToCart = () => {
-    // If user not logged in, redirect to auth
     if (!user) {
       navigate("/auth");
       return;
     }
-    // If no measurements saved, redirect to profile
-    if (measurements.length === 0) {
-      setShowMeasurementWarning(true);
-      return;
-    }
-    if (!selectedMeasurement) {
-      setShowMeasurementWarning(true);
-      return;
+
+    // Only require measurements for stitched
+    if (customization.clothType === "stitched") {
+      if (measurements.length === 0 || !selectedMeasurement) {
+        setShowMeasurementWarning(true);
+        return;
+      }
     }
 
     addItem({
       id: product.id,
       name: product.name,
-      price: product.priceFormatted,
+      price: totalPriceFormatted,
       image: product.images[0],
-      measurementId: selectedMeasurement.id,
-      measurementLabel: selectedMeasurement.label,
+      measurementId: customization.clothType === "stitched" ? selectedMeasurement?.id : undefined,
+      measurementLabel: customization.clothType === "stitched" ? selectedMeasurement?.label : undefined,
+      customization,
+      extraCharges,
     }, quantity);
   };
 
   const goToProfile = () => navigate("/profile");
-
 
   return (
     <div className="min-h-screen bg-background">
@@ -182,10 +193,17 @@ const ProductDetail = () => {
              <span className="text-sm text-muted-foreground font-body">{product.rating} Rating</span>
            </div>
 
-           <p className="text-gold-gradient text-3xl font-bold mb-2">
-             <span className="font-heading tracking-wide">PKR</span>{" "}
-             <span className="font-body">{product.priceFormatted.replace(/^PKR\s+/, "")}</span>
-           </p>
+           <div className="mb-2">
+             <p className="text-gold-gradient text-3xl font-bold">
+               <span className="font-heading tracking-wide">PKR</span>{" "}
+               <span className="font-body">{totalPrice.toLocaleString()}</span>
+             </p>
+             {extraCharges > 0 && (
+               <p className="text-xs text-primary font-body mt-1">
+                 Base: PKR {product.price.toLocaleString()} + Customization: PKR {extraCharges.toLocaleString()}
+               </p>
+             )}
+           </div>
            <p className="text-xs text-muted-foreground font-body mb-6">25% advance required for COD orders</p>
 
             <p className="text-muted-foreground font-body text-sm leading-relaxed mb-6">{product.description}</p>
@@ -202,73 +220,78 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Custom Measurements Section */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-body tracking-wider uppercase text-muted-foreground">Your Measurements</p>
-                {user && (
-                  <button onClick={goToProfile} className="flex items-center gap-1 text-xs text-primary font-body hover:underline">
-                    <Ruler size={12} /> Manage Measurements
-                  </button>
-                )}
-              </div>
+            {/* Customization Options */}
+            <ProductCustomization options={customization} onChange={setCustomization} />
 
-              {!user ? (
-                <div className="bg-secondary/50 border border-border rounded-lg p-4">
-                  <p className="text-sm font-body text-muted-foreground mb-2">
-                    Sign in to add your measurements for custom stitching
-                  </p>
-                  <Button size="sm" onClick={() => navigate("/auth")} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90">
-                    Sign In
-                  </Button>
+            {/* Custom Measurements Section - only for stitched */}
+            {customization.clothType === "stitched" && (
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-body tracking-wider uppercase text-muted-foreground">Your Measurements</p>
+                  {user && (
+                    <button onClick={goToProfile} className="flex items-center gap-1 text-xs text-primary font-body hover:underline">
+                      <Ruler size={12} /> Manage Measurements
+                    </button>
+                  )}
                 </div>
-              ) : measurements.length === 0 ? (
-                <div className="bg-secondary/50 border border-border rounded-lg p-4">
-                  <div className="flex items-start gap-2">
-                    <AlertCircle size={16} className="text-primary mt-0.5 shrink-0" />
-                    <div>
-                      <p className="text-sm font-body text-foreground mb-1">No measurements saved</p>
-                      <p className="text-xs font-body text-muted-foreground mb-3">
-                        We make custom-stitched clothes. Please add your body measurements to order.
-                      </p>
-                      <Button size="sm" onClick={goToProfile} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90 gap-1">
-                        <Ruler size={12} /> Add Measurements
-                      </Button>
+
+                {!user ? (
+                  <div className="bg-secondary/50 border border-border rounded-lg p-4">
+                    <p className="text-sm font-body text-muted-foreground mb-2">
+                      Sign in to add your measurements for custom stitching
+                    </p>
+                    <Button size="sm" onClick={() => navigate("/auth")} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90">
+                      Sign In
+                    </Button>
+                  </div>
+                ) : measurements.length === 0 ? (
+                  <div className="bg-secondary/50 border border-border rounded-lg p-4">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle size={16} className="text-primary mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-sm font-body text-foreground mb-1">No measurements saved</p>
+                        <p className="text-xs font-body text-muted-foreground mb-3">
+                          We make custom-stitched clothes. Please add your body measurements to order.
+                        </p>
+                        <Button size="sm" onClick={goToProfile} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90 gap-1">
+                          <Ruler size={12} /> Add Measurements
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {measurements.map((m) => (
-                    <button
-                      key={m.id}
-                      onClick={() => { setSelectedMeasurement(m); setShowMeasurementWarning(false); }}
-                      className={`w-full text-left p-3 rounded-lg border transition-all duration-300 ${
-                        selectedMeasurement?.id === m.id
-                          ? "bg-primary/10 border-primary"
-                          : "border-border hover:border-primary/30"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-body font-semibold">{m.label}</span>
-                        {m.is_default && <span className="text-[10px] text-primary font-body">Default</span>}
-                      </div>
-                      <div className="flex gap-3 mt-1 text-[10px] font-body text-muted-foreground">
-                        {m.chest && <span>Chest: {m.chest}"</span>}
-                        {m.shoulder && <span>Shoulder: {m.shoulder}"</span>}
-                        {m.shirt_length && <span>Length: {m.shirt_length}"</span>}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
+                ) : (
+                  <div className="space-y-2">
+                    {measurements.map((m) => (
+                      <button
+                        key={m.id}
+                        onClick={() => { setSelectedMeasurement(m); setShowMeasurementWarning(false); }}
+                        className={`w-full text-left p-3 rounded-lg border transition-all duration-300 ${
+                          selectedMeasurement?.id === m.id
+                            ? "bg-primary/10 border-primary"
+                            : "border-border hover:border-primary/30"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-body font-semibold">{m.label}</span>
+                          {m.is_default && <span className="text-[10px] text-primary font-body">Default</span>}
+                        </div>
+                        <div className="flex gap-3 mt-1 text-[10px] font-body text-muted-foreground">
+                          {m.chest && <span>Chest: {m.chest}"</span>}
+                          {m.shoulder && <span>Shoulder: {m.shoulder}"</span>}
+                          {m.shirt_length && <span>Length: {m.shirt_length}"</span>}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
 
-              {showMeasurementWarning && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-destructive font-body mt-2 flex items-center gap-1">
-                  <AlertCircle size={12} /> Please save your measurements first before adding to cart
-                </motion.p>
-              )}
-            </div>
+                {showMeasurementWarning && (
+                  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-destructive font-body mt-2 flex items-center gap-1">
+                    <AlertCircle size={12} /> Please save your measurements first before adding to cart
+                  </motion.p>
+                )}
+              </div>
+            )}
 
             {/* Quantity */}
             <div className="mb-8">
@@ -300,7 +323,6 @@ const ProductDetail = () => {
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border">
               <div className="text-center">
                 <div className="relative mx-auto w-fit mb-2 flex items-center justify-center">
-                  {/* Speed lines */}
                   <motion.div
                     animate={{ x: [0, 3, 0], opacity: [0.3, 0.8, 0.3] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -310,10 +332,7 @@ const ProductDetail = () => {
                     <div className="w-3 h-0.5 bg-primary/40 rounded"></div>
                     <div className="w-2 h-0.5 bg-primary/60 rounded"></div>
                   </motion.div>
-                  <motion.div
-                    animate={{ x: [0, 3, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  >
+                  <motion.div animate={{ x: [0, 3, 0] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
                     <Truck size={20} className="text-primary" />
                   </motion.div>
                 </div>
@@ -321,18 +340,9 @@ const ProductDetail = () => {
               </div>
               <div className="text-center">
                 <div className="relative mx-auto w-fit mb-2">
-                  <motion.div
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="relative"
-                  >
+                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} className="relative">
                     <Shield size={20} className="text-primary" />
-                    {/* Checkmark centered on the shield */}
-                    <motion.div
-                      animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                      className="absolute inset-0 flex items-center justify-center"
-                    >
+                    <motion.div animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} className="absolute inset-0 flex items-center justify-center">
                       <Check size={8} className="text-primary" />
                     </motion.div>
                   </motion.div>
@@ -340,11 +350,7 @@ const ProductDetail = () => {
                 <p className="text-[10px] font-body text-muted-foreground uppercase tracking-wider">Secure Payment</p>
               </div>
               <div className="text-center">
-                <motion.div
-                  animate={{ rotate: -360 }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                  className="mx-auto w-fit mb-2"
-                >
+                <motion.div animate={{ rotate: -360 }} transition={{ duration: 3, repeat: Infinity, ease: "linear" }} className="mx-auto w-fit mb-2">
                   <RotateCcw size={20} className="text-primary" />
                 </motion.div>
                 <p className="text-[10px] font-body text-muted-foreground uppercase tracking-wider">Easy Returns</p>

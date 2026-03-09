@@ -4,6 +4,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import CartNotification from "@/components/CartNotification";
 
+export interface CartItemCustomization {
+  clothType: "stitched" | "unstitched";
+  collarType: "collar" | "cuff";
+  buttonType: "simple" | "fancy";
+  flareType: "circular" | "slit";
+  pleatType: "single" | "double";
+}
+
 export interface CartItem {
   id: string;
   name: string;
@@ -12,6 +20,8 @@ export interface CartItem {
   quantity: number;
   measurementId?: string;
   measurementLabel?: string;
+  customization?: CartItemCustomization;
+  extraCharges?: number;
 }
 
 interface CartContextType {
@@ -42,12 +52,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
+  const getCartKey = (item: { id: string; measurementId?: string; customization?: CartItemCustomization }) => {
+    const custKey = item.customization
+      ? `${item.customization.clothType}-${item.customization.collarType}-${item.customization.buttonType}-${item.customization.flareType}-${item.customization.pleatType}`
+      : "default";
+    return `${item.id}-${item.measurementId || ""}-${custKey}`;
+  };
+
   const addItem = (item: Omit<CartItem, "quantity">, qty: number = 1) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id && i.measurementId === item.measurementId);
+      const newKey = getCartKey(item);
+      const existing = prev.find((i) => getCartKey(i) === newKey);
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id && i.measurementId === item.measurementId
+          getCartKey(i) === newKey
             ? { ...i, quantity: i.quantity + qty }
             : i
         );
