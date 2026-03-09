@@ -30,6 +30,11 @@ import About from "./pages/About";
 import Payment from "./pages/Payment";
 import MyOrders from "./pages/MyOrders";
 import NotFound from "./pages/NotFound";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminPartners from "./pages/admin/AdminPartners";
+import AdminProducts from "./pages/admin/AdminProducts";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +72,14 @@ const AnimatedRoutes = () => {
           <Route path="/my-orders" element={<PageTransition><MyOrders /></PageTransition>} />
           <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
           <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
+          
+          <Route path="/admin" element={<PageTransition><AdminLayout /></PageTransition>}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="partners" element={<AdminPartners />} />
+            <Route path="products" element={<AdminProducts />} />
+          </Route>
+
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </AnimatePresence>
