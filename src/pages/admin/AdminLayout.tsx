@@ -2,7 +2,7 @@ import { Outlet, Navigate, NavLink } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/hooks/useAuth";
 import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
-import { LayoutDashboard, ShoppingCart, Users, Package, LogOut } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Users, Package, LogOut, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AdminLayout() {
@@ -57,6 +57,14 @@ export default function AdminLayout() {
                       <NavLink to="/admin/products" className={({ isActive }) => isActive ? "bg-muted" : ""}>
                         <Package />
                         <span>Products</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink to="/admin/payouts" className={({ isActive }) => isActive ? "bg-muted" : ""}>
+                        <Wallet />
+                        <span>Payouts</span>
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
