@@ -13,8 +13,12 @@ import CartDrawer from "@/components/CartDrawer";
 
 const Checkout = () => {
   const { items, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState<"full" | "advance">("advance");
+  const [isPartner, setIsPartner] = useState(false);
+  const [isReselling, setIsReselling] = useState(false);
+  const [profitAmount, setProfitAmount] = useState<number>(0);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -23,6 +27,13 @@ const Checkout = () => {
     city: "",
     notes: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      supabase.from("partner_applications").select("status").eq("user_id", user.id).eq("status", "approved").maybeSingle()
+        .then(({ data }) => setIsPartner(!!data));
+    }
+  }, [user]);
 
   const subtotal = items.reduce((sum, item) => {
     const price = parseInt(item.price.replace(/[^0-9]/g, ""));
