@@ -50,9 +50,9 @@ export default function AdminPayouts() {
       case "pending":
         return <Badge variant="outline" className="gap-1"><Clock className="h-3 w-3" /> Pending</Badge>;
       case "processing":
-        return <Badge className="bg-blue-500 gap-1"><Banknote className="h-3 w-3" /> Processing</Badge>;
+        return <Badge variant="secondary" className="gap-1"><Banknote className="h-3 w-3" /> Processing</Badge>;
       case "completed":
-        return <Badge className="bg-green-600 gap-1"><Check className="h-3 w-3" /> Completed</Badge>;
+        return <Badge variant="default" className="gap-1"><Check className="h-3 w-3" /> Completed</Badge>;
       case "rejected":
         return <Badge variant="destructive" className="gap-1"><X className="h-3 w-3" /> Rejected</Badge>;
       default:
