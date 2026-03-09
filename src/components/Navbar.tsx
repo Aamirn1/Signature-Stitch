@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingBag, User, Menu, X, ChevronRight } from "lucide-react";
+import { Search, ShoppingBag, User, Menu, X, ChevronRight, Shield } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "@/components/Logo";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
+import { useRole } from "@/hooks/useRole";
 import SearchOverlay from "@/components/SearchOverlay";
 
 const navLinks = [
