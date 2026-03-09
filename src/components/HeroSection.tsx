@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
@@ -5,11 +6,18 @@ import { Button } from "@/components/ui/button";
 
 const line1 = "Where Tradition Meets";
 const line2 = "Elegance";
-const allChars = line1 + "\n" + line2;
 const charDelay = 0.06;
 const startDelay = 0.5;
+const totalTypingTime = (startDelay + (line1.length + 1 + line2.length) * charDelay) * 1000;
 
 const HeroSection = () => {
+  const [showCursor, setShowCursor] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowCursor(false), totalTypingTime + 600);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden ambient-glow">
       {/* Background Image */}
@@ -62,6 +70,14 @@ const HeroSection = () => {
                 {char}
               </motion.span>
             ))}
+            {showCursor && (
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity, repeatType: "loop" }}
+                className="inline-block w-[3px] h-[0.75em] bg-primary ml-1 align-baseline"
+              />
+            )}
           </span>
         </h1>
 

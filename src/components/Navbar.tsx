@@ -49,9 +49,9 @@ const Navbar = () => {
         }`}
       >
         <div className="max-w-7xl mx-auto section-padding flex items-center justify-between h-16 lg:h-20">
-          <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
+          <div>
             <Logo size="md" />
-          </motion.div>
+          </div>
 
           <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (

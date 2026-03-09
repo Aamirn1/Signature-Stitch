@@ -13,14 +13,13 @@ const Logo = ({ className = "", size = "md" }: LogoProps) => {
   };
 
   return (
-    <Link to="/" className={`flex items-center gap-1 group relative ${className}`}>
+    <Link to="/" className={`flex items-center gap-1 ${className}`}>
       <span
         className={`font-heading font-bold tracking-wider ${sizeClasses[size]} logo-shimmer logo-gold-text`}
         style={{ textShadow: "0 0 40px hsl(45 93% 47% / 0.5)" }}
       >
         Signature Stitch
       </span>
-      <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
     </Link>
   );
 };
