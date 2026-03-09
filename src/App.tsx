@@ -79,11 +79,10 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <AnimatedRoutes />
+            <WhatsAppButton />
+            <AIChatAssistant />
+            <ScrollToTop />
           </BrowserRouter>
-          {/* Floating buttons outside BrowserRouter to avoid any transform interference */}
-          <WhatsAppButton />
-          <AIChatAssistant />
-          <ScrollToTop />
         </CartProvider>
       </AuthProvider>
     </TooltipProvider>
