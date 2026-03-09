@@ -336,11 +336,11 @@ const ProductDetail = () => {
                   </motion.div>
                   {/* Yellow checkmark */}
                   <motion.div
-                    animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                    animate={{ scale: [0, 1.2, 1], opacity: [0, 1, 0.8] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                   >
-                    <Check size={8} className="text-primary" />
+                    <Check size={12} className="text-gold drop-shadow-sm" />
                   </motion.div>
                 </div>
                 <p className="text-[10px] font-body text-muted-foreground uppercase tracking-wider">Secure Payment</p>
