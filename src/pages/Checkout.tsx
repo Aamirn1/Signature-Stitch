@@ -30,8 +30,21 @@ const Checkout = () => {
     notes: "",
   });
 
+  // Autofill from profile
   useEffect(() => {
     if (user) {
+      supabase.from("profiles").select("*").eq("id", user.id).single().then(({ data }) => {
+        if (data) {
+          setFormData((prev) => ({
+            ...prev,
+            name: prev.name || data.full_name || "",
+            phone: prev.phone || data.phone || "",
+            email: prev.email || data.email || "",
+            address: prev.address || (data as any).address || "",
+            city: prev.city || (data as any).city || "",
+          }));
+        }
+      });
       supabase.from("partner_applications").select("status").eq("user_id", user.id).eq("status", "approved").maybeSingle()
         .then(({ data }) => setIsPartner(!!data));
     }

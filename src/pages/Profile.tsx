@@ -17,6 +17,8 @@ interface Profile {
   phone: string;
   email: string;
   avatar_url: string;
+  address: string;
+  city: string;
 }
 
 interface Measurement {
@@ -60,7 +62,7 @@ const measurementFields = [
 const Profile = () => {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<Profile>({ full_name: "", phone: "", email: "", avatar_url: "" });
+  const [profile, setProfile] = useState<Profile>({ full_name: "", phone: "", email: "", avatar_url: "", address: "", city: "" });
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const [editingMeasurement, setEditingMeasurement] = useState<Omit<Measurement, "id"> & { id?: string } | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -85,7 +87,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     const { data } = await supabase.from("profiles").select("*").eq("id", user!.id).single();
-    if (data) setProfile({ full_name: data.full_name || "", phone: data.phone || "", email: data.email || "", avatar_url: data.avatar_url || "" });
+    if (data) setProfile({ full_name: data.full_name || "", phone: data.phone || "", email: data.email || "", avatar_url: data.avatar_url || "", address: (data as any).address || "", city: (data as any).city || "" });
   };
 
   const fetchMeasurements = async () => {
@@ -98,8 +100,10 @@ const Profile = () => {
     const { error } = await supabase.from("profiles").update({
       full_name: profile.full_name,
       phone: profile.phone,
+      address: profile.address,
+      city: profile.city,
       updated_at: new Date().toISOString(),
-    }).eq("id", user!.id);
+    } as any).eq("id", user!.id);
     setSaving(false);
     if (error) toast.error("Failed to save profile");
     else toast.success("Profile updated");
@@ -229,7 +233,7 @@ const Profile = () => {
               )}
             </div>
             <div>
-              <h2 className="font-heading text-lg font-semibold">Personal Details</h2>
+              <h2 className="font-heading text-lg font-semibold">{profile.full_name || "Personal Details"}</h2>
               <p className="text-xs text-muted-foreground font-body">{profile.email}</p>
             </div>
           </div>
@@ -241,6 +245,14 @@ const Profile = () => {
             <div>
               <Label className="text-xs font-body tracking-wider uppercase text-muted-foreground">Phone</Label>
               <Input value={profile.phone} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} placeholder="+92 3XX XXXXXXX" className="mt-1 bg-secondary border-border font-body" />
+            </div>
+            <div>
+              <Label className="text-xs font-body tracking-wider uppercase text-muted-foreground">Full Address</Label>
+              <Input value={profile.address} onChange={(e) => setProfile({ ...profile, address: e.target.value })} placeholder="House #, Street, Area" className="mt-1 bg-secondary border-border font-body" />
+            </div>
+            <div>
+              <Label className="text-xs font-body tracking-wider uppercase text-muted-foreground">City</Label>
+              <Input value={profile.city} onChange={(e) => setProfile({ ...profile, city: e.target.value })} placeholder="e.g. Lahore" className="mt-1 bg-secondary border-border font-body" />
             </div>
           </div>
           <Button onClick={saveProfile} disabled={saving} className="mt-4 bg-gold-gradient text-primary-foreground font-body tracking-wider uppercase text-xs hover:opacity-90">

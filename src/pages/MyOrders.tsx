@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Package, Clock, CheckCircle, AlertCircle, Image } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Package, Clock, CheckCircle, AlertCircle, Image, Truck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import BackButton from "@/components/BackButton";
+import OrderTrackingSteps from "@/components/OrderTrackingSteps";
 
 interface Order {
   id: string;
@@ -20,16 +21,29 @@ interface Order {
   payment_screenshot_url: string | null;
   customer_name: string;
   customer_city: string;
+  tracking_number: string | null;
 }
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof Clock }> = {
   pending_payment: { label: "Pending Payment", color: "text-yellow-400", icon: Clock },
   payment_submitted: { label: "Payment Submitted", color: "text-blue-400", icon: Image },
-  confirmed: { label: "Confirmed", color: "text-primary", icon: CheckCircle },
+  under_review: { label: "Under Review", color: "text-cyan-400", icon: Clock },
+  approved: { label: "Approved", color: "text-primary", icon: CheckCircle },
   stitching: { label: "Being Stitched", color: "text-accent", icon: Package },
-  shipped: { label: "Shipped", color: "text-primary", icon: Package },
+  shipped: { label: "Shipped", color: "text-primary", icon: Truck },
   delivered: { label: "Delivered", color: "text-green-400", icon: CheckCircle },
   cancelled: { label: "Cancelled", color: "text-destructive", icon: AlertCircle },
+};
+
+// Map order status to tracking step index (0-based)
+const statusToStep: Record<string, number> = {
+  pending_payment: 0,
+  payment_submitted: 0,
+  under_review: 0,
+  approved: 1,
+  stitching: 2,
+  shipped: 3,
+  delivered: 4,
 };
 
 const MyOrders = () => {
@@ -37,6 +51,7 @@ const MyOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [fetching, setFetching] = useState(true);
+  const [trackingOrderId, setTrackingOrderId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -86,6 +101,8 @@ const MyOrders = () => {
               const config = statusConfig[order.status] || statusConfig.pending_payment;
               const StatusIcon = config.icon;
               const items = Array.isArray(order.items) ? order.items : [];
+              const isTrackingOpen = trackingOrderId === order.id;
+              const currentStep = statusToStep[order.status] ?? 0;
 
               return (
                 <motion.div
@@ -141,15 +158,50 @@ const MyOrders = () => {
                     </div>
                   </div>
 
-                  {order.status === "pending_payment" && (
-                    <Link
-                      to="/payment"
-                      state={{ orderId: order.id, advanceAmount: order.advance_amount, subtotal: order.subtotal }}
-                      className="inline-block mt-3 text-xs text-primary font-body font-semibold hover:underline"
-                    >
-                      Complete Payment →
-                    </Link>
+                  {/* Tracking number display */}
+                  {order.tracking_number && order.status === "shipped" && (
+                    <div className="mt-3 flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-lg px-3 py-2">
+                      <Truck size={14} className="text-primary" />
+                      <span className="text-xs font-body text-muted-foreground">Tracking:</span>
+                      <span className="text-xs font-mono font-semibold text-foreground">{order.tracking_number}</span>
+                    </div>
                   )}
+
+                  {/* Action buttons */}
+                  <div className="flex items-center gap-3 mt-3">
+                    {order.status === "pending_payment" && (
+                      <Link
+                        to="/payment"
+                        state={{ orderId: order.id, advanceAmount: order.advance_amount, subtotal: order.subtotal }}
+                        className="text-xs text-primary font-body font-semibold hover:underline"
+                      >
+                        Complete Payment →
+                      </Link>
+                    )}
+                    {order.status !== "pending_payment" && order.status !== "cancelled" && (
+                      <button
+                        onClick={() => setTrackingOrderId(isTrackingOpen ? null : order.id)}
+                        className="text-xs text-primary font-body font-semibold hover:underline"
+                      >
+                        {isTrackingOpen ? "Hide Tracking" : "Track Delivery →"}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Tracking Steps */}
+                  <AnimatePresence>
+                    {isTrackingOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-4 pt-4 border-t border-border overflow-hidden"
+                      >
+                        <OrderTrackingSteps currentStep={currentStep} orderDate={order.created_at} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               );
             })}
