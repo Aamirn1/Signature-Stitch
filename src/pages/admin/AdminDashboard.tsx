@@ -232,7 +232,10 @@ export default function AdminDashboard() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }}
+                    contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, color: "white" }}
+                    itemStyle={{ color: "hsl(45,93%,47%)" }}
+                    labelStyle={{ color: "white" }}
+                    formatter={(v: any, name: any) => [<span style={{ color: "hsl(45,93%,47%)" }}>{v}</span>, <span style={{ color: "white" }}>{name}</span>]}
                   />
                   <Legend iconSize={8} wrapperStyle={{ fontSize: 10 }} />
                 </PieChart>
