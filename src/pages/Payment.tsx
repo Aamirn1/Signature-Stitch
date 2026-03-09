@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronLeft, Upload, CheckCircle, Copy, Loader2 } from "lucide-react";
+import OrderTrackingSteps from "@/components/OrderTrackingSteps";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
