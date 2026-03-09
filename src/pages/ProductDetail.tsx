@@ -340,7 +340,7 @@ const ProductDetail = () => {
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                   >
-                    <Check size={8} className="text-yellow-400" />
+                    <Check size={8} className="text-primary" />
                   </motion.div>
                 </div>
                 <p className="text-[10px] font-body text-muted-foreground uppercase tracking-wider">Secure Payment</p>
