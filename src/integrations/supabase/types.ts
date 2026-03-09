@@ -74,6 +74,72 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          advance_amount: number
+          created_at: string
+          customer_address: string
+          customer_city: string
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string
+          id: string
+          is_reseller: boolean
+          items: Json
+          notes: string | null
+          payment_method: string
+          payment_screenshot_url: string | null
+          profit_amount: number | null
+          remaining_amount: number
+          status: string
+          subtotal: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          advance_amount: number
+          created_at?: string
+          customer_address: string
+          customer_city: string
+          customer_email?: string | null
+          customer_name: string
+          customer_phone: string
+          id?: string
+          is_reseller?: boolean
+          items: Json
+          notes?: string | null
+          payment_method?: string
+          payment_screenshot_url?: string | null
+          profit_amount?: number | null
+          remaining_amount: number
+          status?: string
+          subtotal: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          advance_amount?: number
+          created_at?: string
+          customer_address?: string
+          customer_city?: string
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          is_reseller?: boolean
+          items?: Json
+          notes?: string | null
+          payment_method?: string
+          payment_screenshot_url?: string | null
+          profit_amount?: number | null
+          remaining_amount?: number
+          status?: string
+          subtotal?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       partner_applications: {
         Row: {
           business_name: string
