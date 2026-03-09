@@ -184,7 +184,7 @@ const ProductDetail = () => {
               <span className="text-sm text-muted-foreground font-body">{product.rating} Rating</span>
             </div>
 
-            <p className="font-heading text-3xl font-bold mb-2 text-foreground">{product.priceFormatted}</p>
+            <p className="text-gold-gradient font-body text-3xl font-bold mb-2">{product.priceFormatted}</p>
             <p className="text-xs text-muted-foreground font-body mb-6">25% advance required for COD orders</p>
 
             <p className="text-muted-foreground font-body text-sm leading-relaxed mb-6">{product.description}</p>
