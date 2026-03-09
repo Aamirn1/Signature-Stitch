@@ -4,7 +4,7 @@ import Logo from "@/components/Logo";
 
 const Footer = () => {
   return (
-    <footer id="contact" className="border-t border-border bg-card py-12 section-padding px-6 sm:px-8">
+    <footer id="contact" className="border-t border-border bg-card py-12 section-padding">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           {/* Brand */}
