@@ -53,11 +53,14 @@ const Checkout = () => {
     e.preventDefault();
 
     const orderLines = items.map((i) => `• ${i.name} x${i.quantity} — ${i.price}`).join("\n");
+    const resellerInfo = isReselling && profitAmount > 0
+      ? `\n📊 Reseller Order — Profit: PKR ${profitAmount.toLocaleString()} | Customer Price: PKR ${customerTotal.toLocaleString()}`
+      : "";
     const paymentInfo = paymentMethod === "advance"
       ? `\n💰 Payment: 25% Advance (PKR ${advanceAmount.toLocaleString()})\n💳 Remaining: PKR ${remainingAmount.toLocaleString()} (COD)`
       : `\n💰 Payment: Full (PKR ${subtotal.toLocaleString()})`;
 
-    const message = `🛒 *New Order — Signature Stitch*\n\n👤 ${formData.name}\n📞 ${formData.phone}\n📧 ${formData.email}\n📍 ${formData.address}, ${formData.city}\n\n*Order:*\n${orderLines}\n\n*Total: PKR ${subtotal.toLocaleString()}*${paymentInfo}${formData.notes ? `\n\n📝 Notes: ${formData.notes}` : ""}`;
+    const message = `🛒 *New Order — Signature Stitch*\n\n👤 ${formData.name}\n📞 ${formData.phone}\n📧 ${formData.email}\n📍 ${formData.address}, ${formData.city}\n\n*Order:*\n${orderLines}\n\n*Total: PKR ${subtotal.toLocaleString()}*${resellerInfo}${paymentInfo}${formData.notes ? `\n\n📝 Notes: ${formData.notes}` : ""}`;
 
     const whatsAppUrl = `https://wa.me/923205719979?text=${encodeURIComponent(message)}`;
     window.open(whatsAppUrl, "_blank");
