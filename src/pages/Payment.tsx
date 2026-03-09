@@ -162,11 +162,11 @@ const Payment = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <BackButton />
       <div className="pt-20 lg:pt-24 section-padding max-w-lg mx-auto pb-20">
-        <Link to="/checkout" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary font-body mb-6 mt-4 transition-colors">
-          <ChevronLeft size={16} /> Back to Checkout
-        </Link>
+        <div className="flex items-center gap-3 mb-6 mt-4">
+          <BackButton />
+          <span className="text-sm text-muted-foreground font-body">Complete Payment</span>
+        </div>
 
         <h1 className="font-heading text-3xl font-bold mb-2">
           <span className="text-gold-gradient">Complete Payment</span>
