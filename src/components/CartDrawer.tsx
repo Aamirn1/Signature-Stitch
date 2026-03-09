@@ -18,6 +18,37 @@ const CartDrawer = () => {
     navigate("/checkout");
   };
 
+  const formatCustomizationValue = (value: string): string => {
+    const labelMap: Record<string, string> = {
+      'stitched': 'Stitched',
+      'unstitched': 'Unstitched',
+      'collar': 'Collar',
+      'cuff': 'Cuff',
+      'fancy': 'Fancy',
+      'simple': 'Simple',
+      'double': 'Double',
+      'single': 'Single',
+      'circular': 'Circular',
+      'slit': 'Slit',
+      'peak': 'Peak',
+      'notch': 'Notch',
+      'shawl': 'Shawl',
+      'slim': 'Slim',
+      'regular': 'Regular',
+      'relaxed': 'Relaxed',
+      'straight': 'Straight',
+      'tapered': 'Tapered',
+      'wide': 'Wide',
+      'flat': 'Flat',
+      'point': 'Point',
+      'spread': 'Spread',
+      'button-down': 'Button-Down',
+      'mandarin': 'Mandarin',
+      'convertible': 'Convertible',
+    };
+    return labelMap[value] || value;
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -52,31 +83,24 @@ const CartDrawer = () => {
               ) : (
                 <div className="space-y-4">
                   {items.map((item) => (
-                    <div key={`${item.id}-${item.measurementId || ''}-${item.customization?.clothType || ''}`} className="flex gap-4 p-3 rounded-lg bg-background/50">
+                    <div key={`${item.id}-${item.measurementId || ''}-${JSON.stringify(item.customization)}`} className="flex gap-4 p-3 rounded-lg bg-background/50">
                       <img src={item.image} alt={item.name} className="w-20 h-24 object-cover rounded" />
                       <div className="flex-1">
                         <h3 className="font-heading text-sm font-semibold">{item.name}</h3>
                         <p className="text-primary font-body text-sm mt-1">{item.price}</p>
                         {item.customization && (
                           <div className="flex flex-wrap gap-1 mt-1">
-                            <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-body">
-                              {item.customization.clothType === "stitched" ? "Stitched" : "Unstitched"}
-                            </span>
-                            {item.customization.clothType === "stitched" && (
-                              <>
-                                <span className="text-[9px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded font-body">
-                                  {item.customization.collarType === "collar" ? "Collar" : "Cuff"}
-                                </span>
-                                <span className="text-[9px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded font-body">
-                                  {item.customization.buttonType === "fancy" ? "Fancy" : "Simple"} Btn
-                                </span>
-                                <span className="text-[9px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded font-body">
-                                  {item.customization.flareType === "circular" ? "Circular" : "Slit"}
-                                </span>
-                                <span className="text-[9px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded font-body">
-                                  {item.customization.pleatType === "double" ? "Double" : "Single"} Pleat
-                                </span>
-                              </>
+                            {Object.entries(item.customization).slice(0, 4).map(([key, value]) => (
+                              <span key={key} className={`text-[9px] px-1.5 py-0.5 rounded font-body ${
+                                key === 'clothType' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+                              }`}>
+                                {formatCustomizationValue(value)}
+                              </span>
+                            ))}
+                            {Object.keys(item.customization).length > 4 && (
+                              <span className="text-[9px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded font-body">
+                                +{Object.keys(item.customization).length - 4} more
+                              </span>
                             )}
                           </div>
                         )}
