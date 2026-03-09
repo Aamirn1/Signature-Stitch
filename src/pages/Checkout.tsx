@@ -120,12 +120,14 @@ const Checkout = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <CartDrawer />
-      <BackButton />
 
       <div className="pt-20 lg:pt-24 section-padding max-w-5xl mx-auto pb-20">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary font-body mb-6 mt-4 transition-colors">
-          <ChevronLeft size={16} /> Back to Shopping
-        </Link>
+        <div className="flex items-center gap-3 mb-6 mt-4">
+          <BackButton />
+          <Link to="/" className="text-sm text-muted-foreground hover:text-primary font-body transition-colors">
+            Back to Shopping
+          </Link>
+        </div>
 
         {/* Progress Steps */}
         <div className="flex items-center justify-center gap-2 mb-10">

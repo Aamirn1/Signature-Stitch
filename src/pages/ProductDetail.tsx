@@ -128,11 +128,11 @@ const ProductDetail = () => {
       />
       <Navbar />
       <CartDrawer />
-      <BackButton />
 
       <div className="pt-20 lg:pt-24 section-padding max-w-7xl mx-auto">
-        {/* Breadcrumb */}
-        <div className="py-4 flex items-center gap-2 text-sm font-body">
+        {/* Breadcrumb with back button */}
+        <div className="py-4 flex items-center gap-3 text-sm font-body">
+          <BackButton />
           <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
           <span className="text-muted-foreground">/</span>
           <Link to={`/category/${product.categorySlug}`} className="text-muted-foreground hover:text-primary transition-colors">{product.category}</Link>
