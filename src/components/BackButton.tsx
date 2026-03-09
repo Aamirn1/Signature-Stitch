@@ -7,15 +7,15 @@ const BackButton = () => {
 
   return (
     <motion.button
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
       onClick={() => navigate(-1)}
-      className="fixed top-24 left-4 z-40 w-11 h-11 rounded-full bg-background/40 backdrop-blur-md border border-border text-primary hover:bg-primary hover:text-primary-foreground transition-colors duration-300 flex items-center justify-center hover:shadow-[0_0_30px_hsl(45_93%_47%/0.3)]"
+      className="w-9 h-9 rounded-full bg-transparent border border-border/60 text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors duration-300 flex items-center justify-center hover:shadow-[0_0_20px_hsl(var(--gold)/0.2)]"
       aria-label="Go back"
     >
-      <ArrowLeft size={20} />
+      <ArrowLeft size={18} strokeWidth={1.5} />
     </motion.button>
   );
 };
