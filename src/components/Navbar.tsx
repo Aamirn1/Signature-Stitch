@@ -73,6 +73,17 @@ const Navbar = () => {
           </nav>
 
           <div className="flex items-center gap-5">
+            {role === 'admin' && (
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  to="/admin"
+                  className="text-primary hover:text-primary/80 transition-colors"
+                  aria-label="Admin Panel"
+                >
+                  <Shield size={20} />
+                </Link>
+              </motion.div>
+            )}
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
