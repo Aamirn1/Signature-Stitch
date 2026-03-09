@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingBag, Star, Minus, Plus, Truck, Shield, RotateCcw, ZoomIn, Ruler, AlertCircle } from "lucide-react";
+import { ShoppingBag, Star, Minus, Plus, Truck, Shield, RotateCcw, ZoomIn, Ruler, AlertCircle, Check } from "lucide-react";
 import { getProductById } from "@/data/products";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
@@ -306,23 +306,43 @@ const ProductDetail = () => {
             {/* Trust signals */}
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border">
               <div className="text-center">
-                <motion.div
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="mx-auto w-fit mb-2"
-                >
-                  <Truck size={20} className="text-primary" />
-                </motion.div>
+                <div className="relative mx-auto w-fit mb-2 flex items-center justify-center">
+                  {/* Speed lines */}
+                  <motion.div
+                    animate={{ x: [0, 3, 0], opacity: [0.3, 0.8, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute -left-6 flex flex-col gap-1"
+                  >
+                    <div className="w-2 h-0.5 bg-primary/60 rounded"></div>
+                    <div className="w-3 h-0.5 bg-primary/40 rounded"></div>
+                    <div className="w-2 h-0.5 bg-primary/60 rounded"></div>
+                  </motion.div>
+                  <motion.div
+                    animate={{ x: [0, 3, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <Truck size={20} className="text-primary" />
+                  </motion.div>
+                </div>
                 <p className="text-[10px] font-body text-muted-foreground uppercase tracking-wider">Free Shipping</p>
               </div>
               <div className="text-center">
-                <motion.div
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="mx-auto w-fit mb-2"
-                >
-                  <Shield size={20} className="text-primary" />
-                </motion.div>
+                <div className="relative mx-auto w-fit mb-2">
+                  <motion.div
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <Shield size={20} className="text-primary" />
+                  </motion.div>
+                  {/* Yellow checkmark */}
+                  <motion.div
+                    animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                  >
+                    <Check size={8} className="text-primary" />
+                  </motion.div>
+                </div>
                 <p className="text-[10px] font-body text-muted-foreground uppercase tracking-wider">Secure Payment</p>
               </div>
               <div className="text-center">
