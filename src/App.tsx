@@ -35,6 +35,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminPartners from "./pages/admin/AdminPartners";
 import AdminProducts from "./pages/admin/AdminProducts";
+import AdminPayouts from "./pages/admin/AdminPayouts";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +79,7 @@ const AnimatedRoutes = () => {
             <Route path="orders" element={<AdminOrders />} />
             <Route path="partners" element={<AdminPartners />} />
             <Route path="products" element={<AdminProducts />} />
+            <Route path="payouts" element={<AdminPayouts />} />
           </Route>
 
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
