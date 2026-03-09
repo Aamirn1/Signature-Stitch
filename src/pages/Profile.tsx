@@ -67,9 +67,7 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const [partnerStatus, setPartnerStatus] = useState<string | null>(null);
 
-  // Partner application form
-  const [showPartnerForm, setShowPartnerForm] = useState(false);
-  const [partnerForm, setPartnerForm] = useState({ business_name: "", phone: "", city: "", reason: "" });
+  const [converting, setConverting] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -180,27 +178,22 @@ const Profile = () => {
     setPartnerStatus(data?.status ?? null);
   };
 
-  const applyAsPartner = async () => {
-    if (!partnerForm.business_name || !partnerForm.phone || !partnerForm.city) {
-      toast.error("Please fill all required fields");
-      return;
-    }
-    setSaving(true);
+  const convertToPartner = async () => {
+    setConverting(true);
     const { error } = await supabase.from("partner_applications").insert({
       user_id: user!.id,
-      business_name: partnerForm.business_name,
-      phone: partnerForm.phone,
-      city: partnerForm.city,
-      reason: partnerForm.reason,
+      business_name: profile.full_name || "Partner",
+      phone: profile.phone || "",
+      city: "",
+      status: "approved",
     });
-    setSaving(false);
+    setConverting(false);
     if (error) {
-      toast.error("Application failed. You may have already applied.");
+      toast.error("Conversion failed. You may already be a partner.");
       return;
     }
-    toast.success("Partner application submitted!");
-    setShowPartnerForm(false);
-    setPartnerStatus("pending");
+    toast.success("You're now a partner! Access your dashboard to start reselling.");
+    setPartnerStatus("approved");
   };
 
   const handleSignOut = async () => {
@@ -469,57 +462,17 @@ const Profile = () => {
             </div>
           ) : (
             <div className="bg-card border border-border rounded-xl p-6">
-              {showPartnerForm ? (
-                <>
-                  <p className="font-body text-sm font-semibold mb-3">Convert to Partner Profile</p>
-                  <div className="bg-secondary/50 rounded-lg p-4 border border-border/50 mb-4">
-                    <p className="font-body text-xs font-semibold mb-2 text-primary">How Reselling Works:</p>
-                    <ul className="text-xs text-muted-foreground font-body space-y-1.5">
-                      <li className="flex gap-2"><span className="text-primary font-bold">1.</span> Browse our catalog and share products with your customers</li>
-                      <li className="flex gap-2"><span className="text-primary font-bold">2.</span> Set your own profit margin on each order at checkout</li>
-                      <li className="flex gap-2"><span className="text-primary font-bold">3.</span> We handle stitching, quality control, and delivery</li>
-                      <li className="flex gap-2"><span className="text-primary font-bold">4.</span> Your profit is collected and paid via Easypaisa/JazzCash/Bank</li>
-                    </ul>
-                    <p className="text-[10px] text-muted-foreground font-body mt-3 italic">
-                      💡 Buying for yourself? Simply skip the profit field during checkout — no markup needed!
-                    </p>
-                  </div>
-                  <div className="space-y-3 pt-4 border-t border-border">
-                    <Input value={partnerForm.business_name} onChange={(e) => setPartnerForm({ ...partnerForm, business_name: e.target.value })} placeholder="Business / Brand Name *" className="bg-secondary border-border font-body" />
-                    <div className="grid grid-cols-2 gap-3">
-                      <Input value={partnerForm.phone} onChange={(e) => setPartnerForm({ ...partnerForm, phone: e.target.value })} placeholder="Phone Number *" className="bg-secondary border-border font-body" />
-                      <Input value={partnerForm.city} onChange={(e) => setPartnerForm({ ...partnerForm, city: e.target.value })} placeholder="City *" className="bg-secondary border-border font-body" />
-                    </div>
-                    <textarea
-                      value={partnerForm.reason}
-                      onChange={(e) => setPartnerForm({ ...partnerForm, reason: e.target.value })}
-                      placeholder="Tell us about your business (optional)"
-                      rows={3}
-                      className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    />
-                    <div className="flex gap-3">
-                      <Button onClick={applyAsPartner} disabled={saving} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90">
-                        {saving ? "Submitting..." : "Convert to Partner"}
-                      </Button>
-                      <Button variant="outline" onClick={() => setShowPartnerForm(false)} className="font-body text-xs">Cancel</Button>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p className="font-body text-sm mb-2">
-                    Start reselling Signature Stitch products — set your own prices, earn on every sale!
-                  </p>
-                  <ul className="text-xs text-muted-foreground font-body space-y-1 mb-4">
-                    <li>• Set your own profit margin on each product</li>
-                    <li>• We handle stitching, quality, and delivery</li>
-                    <li>• Track your earnings and request payouts</li>
-                  </ul>
-                  <Button onClick={() => setShowPartnerForm(true)} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90 gap-2">
-                    <Handshake size={14} /> Convert to Partner Profile
-                  </Button>
-                </>
-              )}
+              <p className="font-body text-sm mb-2">
+                Start reselling Signature Stitch products — set your own prices, earn on every sale!
+              </p>
+              <ul className="text-xs text-muted-foreground font-body space-y-1 mb-4">
+                <li>• Set your own profit margin on each product</li>
+                <li>• We handle stitching, quality, and delivery</li>
+                <li>• Track your earnings and request payouts</li>
+              </ul>
+              <Button onClick={convertToPartner} disabled={converting} className="bg-gold-gradient text-primary-foreground font-body text-xs tracking-wider uppercase hover:opacity-90 gap-2">
+                <Handshake size={14} /> {converting ? "Converting..." : "Convert to Partner Profile"}
+              </Button>
             </div>
           )}
         </motion.div>
