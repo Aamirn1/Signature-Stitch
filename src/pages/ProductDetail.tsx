@@ -41,11 +41,14 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [zoomOpen, setZoomOpen] = useState(false);
   const [showMeasurementWarning, setShowMeasurementWarning] = useState(false);
+  
+  // Default customization based on category
+  const isWaistcoat = product?.categorySlug === "waistcoats";
   const [customization, setCustomization] = useState<CustomizationOptions>({
     clothType: "stitched",
-    collarType: "collar",
-    buttonType: "simple",
-    flareType: "circular",
+    collarType: isWaistcoat ? "cuff" : "collar",
+    buttonType: isWaistcoat ? "fancy" : "simple",
+    flareType: isWaistcoat ? "slit" : "circular",
     pleatType: "single",
   });
 
