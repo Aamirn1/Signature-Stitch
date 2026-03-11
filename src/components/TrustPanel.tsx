@@ -83,14 +83,14 @@ const stats = [
 const TrustPanel = () => {
   return (
     <section className="py-16 border-y border-border bg-secondary">
-      <div className="max-w-7xl mx-auto section-padding">
+      <div className="max-w-7xl mx-auto px-6 sm:section-padding">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {trustItems.map((item, i) => (
             <motion.div
               key={item.title}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
               className="text-center group"
             >
@@ -110,12 +110,8 @@ const TrustPanel = () => {
         {/* Animated Counters */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 pt-8 border-t border-border">
           {stats.map((stat, i) => (
-            <motion.div
+            <div
               key={stat.label}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
               className="text-center"
             >
               <AnimatedCounter
@@ -124,7 +120,7 @@ const TrustPanel = () => {
                 className="font-heading text-2xl sm:text-3xl font-bold text-primary"
               />
               <p className="text-xs text-muted-foreground font-body mt-1">{stat.label}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

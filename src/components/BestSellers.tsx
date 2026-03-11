@@ -9,7 +9,7 @@ const BestSellers = () => {
   const bestSellers = products.slice(0, 4);
 
   return (
-    <section className="py-20 lg:py-28 section-padding max-w-7xl mx-auto">
+    <section className="py-20 lg:py-28 px-6 sm:section-padding max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}

@@ -1,22 +1,20 @@
 import { useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingBag, Star, SlidersHorizontal, X } from "lucide-react";
+import { ShoppingBag, Star, SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { categories, getProductsByCategory, priceRanges, products as allProducts } from "@/data/products";
 import { useCart } from "@/hooks/useCart";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
-import WhatsAppButton from "@/components/WhatsAppButton";
-import AIChatAssistant from "@/components/AIChatAssistant";
-import ScrollToTop from "@/components/ScrollToTop";
 import SEOHead from "@/components/SEOHead";
 
 const Category = () => {
   const { slug } = useParams<{ slug: string }>();
   const { addItem } = useCart();
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [catDropdownOpen, setCatDropdownOpen] = useState(false);
+  const [priceDropdownOpen, setPriceDropdownOpen] = useState(false);
 
   const category = categories.find((c) => c.slug === slug);
   const categoryProducts = slug ? getProductsByCategory(slug) : allProducts;
@@ -39,7 +37,7 @@ const Category = () => {
 
       <div className="pt-20 lg:pt-24">
         {/* Breadcrumb */}
-        <div className="section-padding max-w-7xl mx-auto pt-4 flex items-center gap-2 text-sm font-body">
+        <div className="px-6 sm:section-padding max-w-7xl mx-auto pt-4 flex items-center gap-2 text-sm font-body">
           <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
           <span className="text-muted-foreground">/</span>
           {category ? (
@@ -54,7 +52,7 @@ const Category = () => {
         </div>
 
         {/* Header */}
-        <div className="section-padding max-w-7xl mx-auto py-6">
+        <div className="px-6 sm:section-padding max-w-7xl mx-auto py-6">
           <p className="text-sm tracking-[0.3em] uppercase text-primary font-body mb-2">
             {category ? category.subtitle : "All Products"}
           </p>
@@ -65,8 +63,8 @@ const Category = () => {
 
         {/* Filters Bar */}
         <div className="sticky top-16 lg:top-20 z-30 bg-card/90 backdrop-blur-xl border-y border-border">
-          <div className="section-padding max-w-7xl mx-auto py-3 flex items-center gap-3 overflow-x-auto scrollbar-hide">
-            {/* Category chips */}
+          {/* Desktop filters */}
+          <div className="hidden sm:flex px-6 sm:section-padding max-w-7xl mx-auto py-3 items-center gap-3 overflow-x-auto scrollbar-hide">
             <Link
               to="/shop"
               className={`shrink-0 px-4 py-2 rounded-full text-xs font-body tracking-wider uppercase border transition-all duration-300 ${
@@ -93,16 +91,13 @@ const Category = () => {
 
             <div className="w-px h-6 bg-border shrink-0 mx-2" />
 
-            {/* Price filter toggle */}
             <button
-              onClick={() => setFiltersOpen(!filtersOpen)}
+              onClick={() => setPriceDropdownOpen(!priceDropdownOpen)}
               className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-xs font-body tracking-wider uppercase border border-border text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300"
             >
               <SlidersHorizontal size={14} />
               Price
-              {selectedPrice !== null && (
-                <span className="w-2 h-2 rounded-full bg-primary" />
-              )}
+              {selectedPrice !== null && <span className="w-2 h-2 rounded-full bg-primary" />}
             </button>
 
             {selectedPrice !== null && (
@@ -116,13 +111,86 @@ const Category = () => {
             )}
           </div>
 
-          {/* Price dropdown */}
-          {filtersOpen && (
+          {/* Mobile filters - dropdown buttons */}
+          <div className="sm:hidden px-6 py-3 flex gap-2">
+            {/* Category dropdown */}
+            <div className="relative flex-1">
+              <button
+                onClick={() => { setCatDropdownOpen(!catDropdownOpen); setPriceDropdownOpen(false); }}
+                className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-xs font-body tracking-wider uppercase border border-border text-foreground bg-secondary"
+              >
+                <span>{category ? category.title : "All Categories"}</span>
+                <ChevronDown size={14} className={`transition-transform ${catDropdownOpen ? "rotate-180" : ""}`} />
+              </button>
+              {catDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-50 overflow-hidden"
+                >
+                  <Link
+                    to="/shop"
+                    onClick={() => setCatDropdownOpen(false)}
+                    className={`block px-4 py-3 text-xs font-body tracking-wider uppercase ${!slug ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"}`}
+                  >
+                    All Categories
+                  </Link>
+                  {categories.map((cat) => (
+                    <Link
+                      key={cat.slug}
+                      to={`/category/${cat.slug}`}
+                      onClick={() => setCatDropdownOpen(false)}
+                      className={`block px-4 py-3 text-xs font-body tracking-wider uppercase border-t border-border ${slug === cat.slug ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"}`}
+                    >
+                      {cat.title}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </div>
+
+            {/* Price dropdown */}
+            <div className="relative flex-1">
+              <button
+                onClick={() => { setPriceDropdownOpen(!priceDropdownOpen); setCatDropdownOpen(false); }}
+                className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-xs font-body tracking-wider uppercase border border-border text-foreground bg-secondary"
+              >
+                <span>{selectedPrice !== null ? priceRanges[selectedPrice].label : "Price"}</span>
+                <ChevronDown size={14} className={`transition-transform ${priceDropdownOpen ? "rotate-180" : ""}`} />
+              </button>
+              {priceDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-50 overflow-hidden"
+                >
+                  <button
+                    onClick={() => { setSelectedPrice(null); setPriceDropdownOpen(false); }}
+                    className={`block w-full text-left px-4 py-3 text-xs font-body ${selectedPrice === null ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"}`}
+                  >
+                    All Prices
+                  </button>
+                  {priceRanges.map((range, i) => (
+                    <button
+                      key={range.label}
+                      onClick={() => { setSelectedPrice(i); setPriceDropdownOpen(false); }}
+                      className={`block w-full text-left px-4 py-3 text-xs font-body border-t border-border ${selectedPrice === i ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"}`}
+                    >
+                      {range.label}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </div>
+          </div>
+
+          {/* Desktop price dropdown */}
+          {priceDropdownOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="section-padding max-w-7xl mx-auto pb-4"
+              className="hidden sm:block px-6 sm:section-padding max-w-7xl mx-auto pb-4"
             >
               <div className="flex flex-wrap gap-2">
                 {priceRanges.map((range, i) => (
@@ -130,7 +198,7 @@ const Category = () => {
                     key={range.label}
                     onClick={() => {
                       setSelectedPrice(selectedPrice === i ? null : i);
-                      setFiltersOpen(false);
+                      setPriceDropdownOpen(false);
                     }}
                     className={`px-4 py-2 rounded-full text-xs font-body border transition-all duration-300 ${
                       selectedPrice === i
@@ -147,7 +215,7 @@ const Category = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="section-padding max-w-7xl mx-auto py-10">
+        <div className="px-6 sm:section-padding max-w-7xl mx-auto py-10">
           <p className="text-sm text-muted-foreground font-body mb-6">
             {filteredProducts.length} product{filteredProducts.length !== 1 ? "s" : ""}
           </p>
@@ -208,9 +276,6 @@ const Category = () => {
       </div>
 
       <Footer />
-      <WhatsAppButton />
-      <AIChatAssistant />
-      <ScrollToTop />
     </div>
   );
 };
