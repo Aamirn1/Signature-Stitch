@@ -24,6 +24,7 @@ interface ProductForm {
   name: string;
   slug: string;
   price: string;
+  unstitched_price: string;
   category_slug: string;
   image_url: string;
   description: string;
@@ -34,6 +35,7 @@ const initialForm: ProductForm = {
   name: "",
   slug: "",
   price: "",
+  unstitched_price: "",
   category_slug: "shalwar-kameez",
   image_url: "",
   description: "",
@@ -63,7 +65,7 @@ export default function AdminProducts() {
   });
 
   const createProduct = useMutation({
-    mutationFn: async (product: Omit<ProductForm, "price"> & { price: number }) => {
+    mutationFn: async (product: any) => {
       const { error } = await supabase.from("products").insert([product]);
       if (error) throw error;
     },
@@ -77,7 +79,7 @@ export default function AdminProducts() {
   });
 
   const updateProduct = useMutation({
-    mutationFn: async ({ id, ...product }: { id: string } & Omit<ProductForm, "price"> & { price: number }) => {
+    mutationFn: async ({ id, ...product }: any) => {
       const { error } = await supabase.from("products").update(product).eq("id", id);
       if (error) throw error;
     },
@@ -105,8 +107,13 @@ export default function AdminProducts() {
 
   const handleImageUpload = async (file: File) => {
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please upload an image file");
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      toast.error("Only JPG, PNG, WebP files allowed");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size must be under 5MB");
       return;
     }
     setImageUploading(true);
@@ -132,9 +139,14 @@ export default function AdminProducts() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const productData = {
-      ...form,
-      price: parseFloat(form.price),
+      name: form.name,
       slug: form.slug || form.name.toLowerCase().replace(/\s+/g, "-"),
+      price: parseFloat(form.price),
+      unstitched_price: form.unstitched_price ? parseFloat(form.unstitched_price) : null,
+      category_slug: form.category_slug,
+      image_url: form.image_url,
+      description: form.description,
+      is_active: form.is_active,
     };
     if (editingId) {
       updateProduct.mutate({ id: editingId, ...productData });
@@ -149,6 +161,7 @@ export default function AdminProducts() {
       name: product.name,
       slug: product.slug,
       price: product.price.toString(),
+      unstitched_price: product.unstitched_price?.toString() || "",
       category_slug: product.category_slug,
       image_url: product.image_url,
       description: product.description || "",
@@ -165,13 +178,12 @@ export default function AdminProducts() {
     }
   };
 
-  // ── CSV Export ──────────────────────────────────────────────────────────────
   const handleExport = () => {
     if (!products || products.length === 0) {
       toast.error("No products to export");
       return;
     }
-    const headers = ["name", "slug", "price", "category_slug", "image_url", "description", "is_active"];
+    const headers = ["name", "slug", "price", "unstitched_price", "category_slug", "image_url", "description", "is_active"];
     const rows = products.map((p) =>
       headers.map((h) => {
         const val = (p as any)[h];
@@ -192,7 +204,6 @@ export default function AdminProducts() {
     toast.success(`Exported ${products.length} products`);
   };
 
-  // ── CSV Import ──────────────────────────────────────────────────────────────
   const handleImport = async (file: File) => {
     setImportLoading(true);
     try {
@@ -231,6 +242,7 @@ export default function AdminProducts() {
         name: r.name,
         slug: r.slug || r.name?.toLowerCase().replace(/\s+/g, "-"),
         price: parseFloat(r.price) || 0,
+        unstitched_price: r.unstitched_price ? parseFloat(r.unstitched_price) : null,
         category_slug: r.category_slug || "shalwar-kameez",
         image_url: r.image_url || "https://via.placeholder.com/400x500",
         description: r.description || null,
@@ -258,12 +270,9 @@ export default function AdminProducts() {
           <p className="text-muted-foreground mt-1">Manage your product catalog ({products?.length ?? 0} products)</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {/* Export CSV */}
           <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
             <FileDown className="h-4 w-4" /> Export CSV
           </Button>
-
-          {/* Import CSV */}
           <Button
             variant="outline"
             size="sm"
@@ -282,7 +291,6 @@ export default function AdminProducts() {
             onChange={(e) => e.target.files?.[0] && handleImport(e.target.files[0])}
           />
 
-          {/* Add Product */}
           <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
               <Button size="sm" className="gap-2"><Plus className="h-4 w-4" /> Add Product</Button>
@@ -296,7 +304,6 @@ export default function AdminProducts() {
                 <div className="space-y-2">
                   <Label>Product Image *</Label>
                   <div className="flex gap-3 items-start">
-                    {/* Image preview / placeholder */}
                     <div
                       className="relative w-24 h-24 border-2 border-dashed border-border rounded-lg overflow-hidden flex items-center justify-center bg-muted cursor-pointer hover:border-primary transition-colors shrink-0"
                       onClick={() => fileInputRef.current?.click()}
@@ -304,12 +311,7 @@ export default function AdminProducts() {
                       {imageUploading ? (
                         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                       ) : form.image_url ? (
-                        <img
-                          src={form.image_url}
-                          alt="Preview"
-                          className="w-full h-full object-cover"
-                          onError={(e) => (e.currentTarget.style.display = "none")}
-                        />
+                        <img src={form.image_url} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />
                       ) : (
                         <ImagePlus className="h-6 w-6 text-muted-foreground" />
                       )}
@@ -317,113 +319,66 @@ export default function AdminProducts() {
                         <Upload className="h-4 w-4" />
                       </div>
                     </div>
-
                     <div className="flex-1 space-y-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="w-full gap-2"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={imageUploading}
-                      >
+                      <Button type="button" variant="outline" size="sm" className="w-full gap-2" onClick={() => fileInputRef.current?.click()} disabled={imageUploading}>
                         <Upload className="h-4 w-4" />
                         {imageUploading ? "Uploading..." : "Upload Image"}
                       </Button>
-                      <p className="text-[10px] text-muted-foreground">JPG, PNG, WebP. Or paste a URL below.</p>
-                      <Input
-                        value={form.image_url}
-                        onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-                        placeholder="https://... (paste URL)"
-                        className="text-xs"
-                      />
+                      <p className="text-[10px] text-muted-foreground">JPG, PNG, WebP (max 5MB). Or paste a URL below.</p>
+                      <Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="https://... (paste URL)" className="text-xs" />
                     </div>
                   </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])}
-                  />
+                  <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])} />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="name">Product Name *</Label>
-                  <Input
-                    id="name"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder="Royal Navy Waistcoat"
-                    required
-                  />
+                  <Input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Royal Navy Waistcoat" required maxLength={200} />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="slug">URL Slug</Label>
-                  <Input
-                    id="slug"
-                    value={form.slug}
-                    onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                    placeholder="auto-generated if empty"
-                  />
+                  <Input id="slug" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="auto-generated if empty" maxLength={200} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="price">Price (PKR) *</Label>
-                    <Input
-                      id="price"
-                      type="number"
-                      value={form.price}
-                      onChange={(e) => setForm({ ...form, price: e.target.value })}
-                      placeholder="8500"
-                      required
-                    />
+                    <Label htmlFor="price">Stitched Price (PKR) *</Label>
+                    <Input id="price" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="8500" required min={0} />
+                    <p className="text-[10px] text-muted-foreground">Price when customer selects stitched cloth</p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="category">Category *</Label>
-                    <Select
-                      value={form.category_slug}
-                      onValueChange={(value) => setForm({ ...form, category_slug: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.slug} value={cat.slug}>{cat.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="unstitched_price">Unstitched Price (PKR)</Label>
+                    <Input id="unstitched_price" type="number" value={form.unstitched_price} onChange={(e) => setForm({ ...form, unstitched_price: e.target.value })} placeholder="6000" min={0} />
+                    <p className="text-[10px] text-muted-foreground">Price when customer selects unstitched cloth</p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="category">Category *</Label>
+                  <Select value={form.category_slug} onValueChange={(value) => setForm({ ...form, category_slug: value })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.slug} value={cat.slug}>{cat.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    placeholder="Product description..."
-                    rows={3}
-                  />
+                  <Textarea id="description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Product description..." rows={3} maxLength={2000} />
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <Switch
-                    id="is_active"
-                    checked={form.is_active}
-                    onCheckedChange={(checked) => setForm({ ...form, is_active: checked })}
-                  />
+                  <Switch id="is_active" checked={form.is_active} onCheckedChange={(checked) => setForm({ ...form, is_active: checked })} />
                   <Label htmlFor="is_active">Active (visible to customers)</Label>
                 </div>
 
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={createProduct.isPending || updateProduct.isPending || imageUploading}
-                >
+                <Button type="submit" className="w-full" disabled={createProduct.isPending || updateProduct.isPending || imageUploading}>
                   {editingId ? "Update Product" : "Create Product"}
                 </Button>
               </form>
@@ -432,10 +387,9 @@ export default function AdminProducts() {
         </div>
       </div>
 
-      {/* CSV template hint */}
       <div className="bg-muted/40 border border-border rounded-lg p-3 text-xs text-muted-foreground">
         <strong className="text-foreground">CSV Import format:</strong> Headers must be:{" "}
-        <code className="bg-muted px-1 rounded">name, slug, price, category_slug, image_url, description, is_active</code>
+        <code className="bg-muted px-1 rounded">name, slug, price, unstitched_price, category_slug, image_url, description, is_active</code>
         <span className="ml-2 text-primary cursor-pointer hover:underline" onClick={handleExport}>
           Export existing products as template →
         </span>
@@ -448,7 +402,8 @@ export default function AdminProducts() {
               <TableHead>Image</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
+              <TableHead>Stitched</TableHead>
+              <TableHead>Unstitched</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -456,48 +411,39 @@ export default function AdminProducts() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
-                  <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+                <TableCell colSpan={7} className="text-center py-12">
+                  <Loader2 className="h-6 w-6 animate-spin mx-auto" />
                 </TableCell>
               </TableRow>
             ) : products?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                  No products yet. Click "Add Product" or import a CSV.
-                </TableCell>
+                <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">No products yet</TableCell>
               </TableRow>
             ) : (
               products?.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell>
-                    <img
-                      src={product.image_url}
-                      alt={product.name}
-                      className="w-12 h-14 rounded object-cover"
-                      onError={(e) => (e.currentTarget.src = "/placeholder.svg")}
-                    />
+                    <img src={product.image_url} alt={product.name} className="w-12 h-14 object-cover rounded" />
                   </TableCell>
                   <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell className="capitalize text-sm text-muted-foreground">
-                    {categories.find(c => c.slug === product.category_slug)?.name ?? product.category_slug}
-                  </TableCell>
-                  <TableCell>Rs. {Number(product.price).toLocaleString()}</TableCell>
                   <TableCell>
-                    <Badge variant={product.is_active ? 'default' : 'secondary'}>
-                      {product.is_active ? 'Active' : 'Draft'}
+                    <Badge variant="outline" className="text-xs">{product.category_slug}</Badge>
+                  </TableCell>
+                  <TableCell className="font-semibold">PKR {Number(product.price).toLocaleString()}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {(product as any).unstitched_price ? `PKR ${Number((product as any).unstitched_price).toLocaleString()}` : "—"}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={product.is_active ? "default" : "secondary"} className="text-xs">
+                      {product.is_active ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => handleEdit(product)}>
+                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => handleEdit(product)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => deleteProduct.mutate(product.id)}
-                        disabled={deleteProduct.isPending}
-                      >
+                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => deleteProduct.mutate(product.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>

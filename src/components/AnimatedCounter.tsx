@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface AnimatedCounterProps {
   target: number;
@@ -12,11 +12,27 @@ interface AnimatedCounterProps {
 const AnimatedCounter = ({ target, suffix = "", prefix = "", duration = 2, className = "" }: AnimatedCounterProps) => {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const hasAnimated = useRef(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (!isInView || hasAnimated.current) return;
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible || hasAnimated.current) return;
     hasAnimated.current = true;
 
     const steps = 60;
@@ -33,14 +49,13 @@ const AnimatedCounter = ({ target, suffix = "", prefix = "", duration = 2, class
     }, (duration * 1000) / steps);
 
     return () => clearInterval(interval);
-  }, [isInView, target, duration]);
+  }, [isVisible, target, duration]);
 
   return (
     <motion.span
       ref={ref}
       initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      animate={isVisible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
       className={className}
     >

@@ -10,11 +10,12 @@ const steps = [
 ];
 
 interface OrderTrackingStepsProps {
-  currentStep?: number; // 0-based, default 0 (Under Review)
+  currentStep?: number;
   orderDate?: string;
+  isDelivered?: boolean;
 }
 
-const OrderTrackingSteps = ({ currentStep = 0, orderDate }: OrderTrackingStepsProps) => {
+const OrderTrackingSteps = ({ currentStep = 0, orderDate, isDelivered = false }: OrderTrackingStepsProps) => {
   const estimatedDelivery = orderDate
     ? new Date(new Date(orderDate).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString("en-PK", {
         day: "numeric",
@@ -24,13 +25,15 @@ const OrderTrackingSteps = ({ currentStep = 0, orderDate }: OrderTrackingStepsPr
     : null;
 
   return (
-    <div className="w-full">
+    <div className="w-full pl-2">
       {/* Steps */}
       <div className="relative flex flex-col gap-0">
         {steps.map((step, i) => {
           const isCompleted = i < currentStep;
           const isActive = i === currentStep;
           const Icon = step.icon;
+          // No animation on delivered step when order is delivered
+          const shouldAnimate = isActive && !(isDelivered && i === 4);
 
           return (
             <div key={step.label} className="flex items-start gap-4 relative">
@@ -42,7 +45,6 @@ const OrderTrackingSteps = ({ currentStep = 0, orderDate }: OrderTrackingStepsPr
                     animate={{ height: "100%" }}
                     transition={{ duration: 0.6, delay: i * 0.3 + 0.3 }}
                     className={`w-full ${isCompleted ? "bg-primary" : "bg-border"}`}
-                    style={{ height: isCompleted || isActive ? "100%" : "100%" }}
                   />
                 </div>
               )}
@@ -56,29 +58,29 @@ const OrderTrackingSteps = ({ currentStep = 0, orderDate }: OrderTrackingStepsPr
               >
                 <motion.div
                   className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-colors duration-500 ${
-                    isCompleted
+                    isCompleted || (isDelivered && i === 4)
                       ? "bg-primary border-primary"
                       : isActive
                       ? "bg-primary/20 border-primary"
                       : "bg-card border-border"
                   }`}
                   animate={
-                    isActive
+                    shouldAnimate
                       ? {
                           boxShadow: [
-                            "0 0 0px hsl(var(--gold) / 0)",
-                            "0 0 25px hsl(var(--gold) / 0.5)",
-                            "0 0 0px hsl(var(--gold) / 0)",
+                            "0 0 0px hsl(45 93% 47% / 0)",
+                            "0 0 25px hsl(45 93% 47% / 0.5)",
+                            "0 0 0px hsl(45 93% 47% / 0)",
                           ],
                         }
                       : {}
                   }
-                  transition={isActive ? { duration: 2, repeat: Infinity, ease: "easeInOut" } : {}}
+                  transition={shouldAnimate ? { duration: 2, repeat: Infinity, ease: "easeInOut" } : {}}
                 >
                   <Icon
                     size={20}
                     className={
-                      isCompleted
+                      isCompleted || (isDelivered && i === 4)
                         ? "text-primary-foreground"
                         : isActive
                         ? "text-primary"
@@ -87,8 +89,8 @@ const OrderTrackingSteps = ({ currentStep = 0, orderDate }: OrderTrackingStepsPr
                   />
                 </motion.div>
 
-                {/* Pulse ring for active */}
-                {isActive && (
+                {/* Pulse ring for active (not on delivered) */}
+                {shouldAnimate && (
                   <motion.div
                     className="absolute inset-0 rounded-full border-2 border-primary"
                     animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
@@ -119,7 +121,7 @@ const OrderTrackingSteps = ({ currentStep = 0, orderDate }: OrderTrackingStepsPr
       </div>
 
       {/* Estimated delivery */}
-      {estimatedDelivery && (
+      {estimatedDelivery && !isDelivered && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -130,6 +132,17 @@ const OrderTrackingSteps = ({ currentStep = 0, orderDate }: OrderTrackingStepsPr
             Estimated Delivery
           </p>
           <p className="font-heading text-lg font-bold text-gold-gradient">{estimatedDelivery}</p>
+        </motion.div>
+      )}
+
+      {isDelivered && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.5, duration: 0.6 }}
+          className="mt-4 p-4 rounded-lg bg-green-500/10 border border-green-500/20 text-center"
+        >
+          <p className="font-heading text-lg font-bold text-green-400">✓ Order Delivered</p>
         </motion.div>
       )}
     </div>
