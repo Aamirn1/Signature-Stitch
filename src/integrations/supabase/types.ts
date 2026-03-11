@@ -295,6 +295,7 @@ export type Database = {
           name: string
           price: number
           slug: string
+          unstitched_price: number | null
           updated_at: string | null
         }
         Insert: {
@@ -308,6 +309,7 @@ export type Database = {
           name: string
           price: number
           slug: string
+          unstitched_price?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -321,6 +323,7 @@ export type Database = {
           name?: string
           price?: number
           slug?: string
+          unstitched_price?: number | null
           updated_at?: string | null
         }
         Relationships: []
@@ -360,6 +363,91 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      return_requests: {
+        Row: {
+          complaint: string
+          created_at: string
+          damage_image_url: string | null
+          id: string
+          order_id: string
+          reviewed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          complaint: string
+          created_at?: string
+          damage_image_url?: string | null
+          id?: string
+          order_id: string
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          complaint?: string
+          created_at?: string
+          damage_image_url?: string | null
+          id?: string
+          order_id?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "return_requests_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string
+          rating: number
+          review_image_url: string | null
+          review_text: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id: string
+          rating: number
+          review_image_url?: string | null
+          review_text?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string
+          rating?: number
+          review_image_url?: string | null
+          review_text?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
