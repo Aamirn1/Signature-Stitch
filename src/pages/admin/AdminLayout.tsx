@@ -2,7 +2,7 @@ import { Outlet, Navigate, NavLink } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/hooks/useAuth";
 import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
-import { LayoutDashboard, ShoppingCart, Users, Package, LogOut, Wallet } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Users, Package, LogOut, Wallet, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AdminLayout() {
