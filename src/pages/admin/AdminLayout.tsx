@@ -68,6 +68,14 @@ export default function AdminLayout() {
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink to="/admin/reviews" className={({ isActive }) => isActive ? "bg-muted" : ""}>
+                        <Star />
+                        <span>Reviews</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
