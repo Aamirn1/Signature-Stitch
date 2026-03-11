@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
+import heroBannerMobile from "@/assets/hero-banner-mobile.png";
 import { Button } from "@/components/ui/button";
 
 const line1 = "Where Tradition Meets";
@@ -11,8 +12,8 @@ const HeroSection = () => {
 
   return (
     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden ambient-glow">
-      {/* Background Image */}
-      <div className="absolute inset-0">
+      {/* Background Image - Desktop */}
+      <div className="absolute inset-0 hidden md:block">
         <img
           src={heroBanner}
           alt="Signature Stitch Premium Pakistani Clothing Collection - Shalwar Kameez, Waistcoats & 3-Piece Suits"
@@ -21,9 +22,19 @@ const HeroSection = () => {
         />
         <div className="absolute inset-0 bg-overlay-dark" />
       </div>
+      {/* Background Image - Mobile */}
+      <div className="absolute inset-0 md:hidden">
+        <img
+          src={heroBannerMobile}
+          alt="Signature Stitch Premium Pakistani Clothing Collection"
+          className="w-full h-full object-cover"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+      </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center section-padding max-w-4xl mx-auto">
+      <div className="relative z-10 text-center section-padding max-w-4xl mx-auto px-6 md:px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -68,7 +79,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.8 }}
-          className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto mb-8 font-body"
+          className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-8 font-body px-2"
         >
           Discover meticulously crafted Shalwar Kameez, Waistcoats & 3-Piece Suits.
           What you see is what you get — quality you can trust.
@@ -81,12 +92,12 @@ const HeroSection = () => {
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button asChild size="lg" className="bg-gold-gradient font-body tracking-widest uppercase text-sm px-8 py-6 transition-all text-primary-foreground font-semibold btn-gold-glow glow-pulse">
+            <Button asChild size="lg" className="bg-gold-gradient font-body tracking-widest uppercase text-sm px-8 py-6 transition-all text-primary-foreground font-semibold btn-gold-glow glow-pulse w-full sm:w-auto">
               <Link to="/shop">Shop Now</Link>
             </Button>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button asChild size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-sm px-8 py-6 hover:bg-primary hover:text-primary-foreground transition-all">
+            <Button asChild size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-sm px-8 py-6 hover:bg-primary hover:text-primary-foreground transition-all w-full sm:w-auto">
               <a href="#collections">View Collections</a>
             </Button>
           </motion.div>
