@@ -140,7 +140,7 @@ const Category = () => {
                       key={cat.slug}
                       to={`/category/${cat.slug}`}
                       onClick={() => setCatDropdownOpen(false)}
-                      className={`block px-4 py-3 text-xs font-body tracking-wider uppercase border-t border-border ${slug === cat.slug ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"}`}
+                      className={`block px-4 py-3 text-xs font-body tracking-wider uppercase border-t border-border whitespace-nowrap ${slug === cat.slug ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"}`}
                     >
                       {cat.title}
                     </Link>

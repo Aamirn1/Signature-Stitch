@@ -15,10 +15,11 @@ const NewsletterSection = () => {
         <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-3">
           Stay in <span className="text-gold-gradient">Style</span>
         </h2>
-        <p className="text-muted-foreground font-body text-sm mb-6">
-          Subscribe for exclusive drops, early access, and style inspiration.
+        <p className="text-muted-foreground font-body text-sm mb-6 px-2 sm:px-0">
+          Subscribe for exclusive drops, early access, and
+          style inspiration.
         </p>
-        <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
+        <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto px-2 sm:px-0" onSubmit={(e) => e.preventDefault()}>
           <Input
             type="email"
             placeholder="Your email address"

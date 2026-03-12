@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
-import heroBannerMobile from "@/assets/hero-banner-mobile.png";
 import { Button } from "@/components/ui/button";
 
 const line1 = "Where Tradition Meets";
@@ -22,86 +21,88 @@ const HeroSection = () => {
         />
         <div className="absolute inset-0 bg-overlay-dark" />
       </div>
-      {/* Background Image - Mobile */}
+      {/* Background - Mobile (CSS gradient to match reference) */}
       <div className="absolute inset-0 md:hidden">
-        <img
-          src={heroBannerMobile}
-          alt="Signature Stitch Premium Pakistani Clothing Collection"
-          className="w-full h-full object-cover"
-          loading="eager"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(30,20%,12%)] via-[hsl(20,10%,8%)] to-[hsl(0,0%,5%)]" />
+        {/* Golden fabric drape accent - top right */}
+        <div className="absolute top-0 right-0 w-3/4 h-1/3 bg-gradient-to-bl from-[hsl(40,60%,30%)/0.4] via-[hsl(38,50%,20%)/0.15] to-transparent" />
+        {/* Subtle gold shimmer overlay */}
+        <div className="absolute top-0 left-1/3 w-1/2 h-1/4 bg-gradient-to-b from-[hsl(45,80%,50%)/0.08] to-transparent blur-2xl" />
+        <div className="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-[hsl(0,0%,3%)] to-transparent" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center section-padding max-w-4xl mx-auto px-6 md:px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          <p className="text-sm sm:text-base tracking-[0.3em] uppercase text-foreground/80 font-body mb-4">
-            Premium Pakistani Fashion
-          </p>
-        </motion.div>
-
-        <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-          <span className="block sm:whitespace-nowrap">
-            {line1.split("").map((char, i) => (
-              <motion.span
-                key={`c1-${i}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: startDelay + i * charDelay, duration: 0.05 }}
-                className="inline-block"
-                style={{ width: char === " " ? "0.3em" : undefined }}
-              >
-                {char === " " ? "\u00A0" : char}
-              </motion.span>
-            ))}
-          </span>
-          <span className="block text-gold-gradient pb-3">
-            {line2.split("").map((char, i) => (
-              <motion.span
-                key={`c2-${i}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: startDelay + (line1.length + 1) * charDelay + i * charDelay, duration: 0.05 }}
-                className="inline-block"
-              >
-                {char}
-              </motion.span>
-            ))}
-          </span>
-        </h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.8 }}
-          className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-8 font-body px-2"
-        >
-          Discover meticulously crafted Shalwar Kameez, Waistcoats & 3-Piece Suits.
-          What you see is what you get — quality you can trust.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 2.0 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button asChild size="lg" className="bg-gold-gradient font-body tracking-widest uppercase text-sm px-8 py-6 transition-all text-primary-foreground font-semibold btn-gold-glow glow-pulse w-full sm:w-auto">
-              <Link to="/shop">Shop Now</Link>
-            </Button>
+      <div className="relative z-10 text-center md:text-center px-8 md:px-4 max-w-4xl mx-auto md:flex md:items-center md:justify-center">
+        {/* Mobile: left-aligned like reference, Desktop: centered */}
+        <div className="text-left md:text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <p className="text-xs sm:text-base tracking-[0.3em] uppercase text-foreground/80 font-body mb-4">
+              Premium Pakistani Fashion
+            </p>
           </motion.div>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button asChild size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-sm px-8 py-6 hover:bg-primary hover:text-primary-foreground transition-all w-full sm:w-auto">
-              <a href="#collections">View Collections</a>
-            </Button>
+
+          <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+            <span className="block sm:whitespace-nowrap">
+              {line1.split("").map((char, i) => (
+                <motion.span
+                  key={`c1-${i}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: startDelay + i * charDelay, duration: 0.05 }}
+                  className="inline-block"
+                  style={{ width: char === " " ? "0.3em" : undefined }}
+                >
+                  {char === " " ? "\u00A0" : char}
+                </motion.span>
+              ))}
+            </span>
+            <span className="block text-gold-gradient pb-3">
+              {line2.split("").map((char, i) => (
+                <motion.span
+                  key={`c2-${i}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: startDelay + (line1.length + 1) * charDelay + i * charDelay, duration: 0.05 }}
+                  className="inline-block"
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </span>
+          </h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.8 }}
+            className="text-muted-foreground text-xs sm:text-base md:text-lg max-w-2xl md:mx-auto mb-8 font-body"
+          >
+            Discover meticulously crafted Shalwar Kameez, Waistcoats & 3-Piece Suits.
+            <span className="hidden sm:inline"> What you see is what you get — quality you can trust.</span>
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 2.0 }}
+            className="flex flex-row gap-3 sm:gap-4 justify-start md:justify-center"
+          >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 md:flex-none">
+              <Button asChild size="lg" className="bg-gold-gradient font-body tracking-widest uppercase text-xs sm:text-sm px-6 sm:px-8 py-5 sm:py-6 transition-all text-primary-foreground font-semibold btn-gold-glow glow-pulse w-full md:w-auto">
+                <Link to="/shop">Shop Now</Link>
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 md:flex-none">
+              <Button asChild size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-xs sm:text-sm px-6 sm:px-8 py-5 sm:py-6 hover:bg-primary hover:text-primary-foreground transition-all w-full md:w-auto">
+                <a href="#collections">View Collections</a>
+              </Button>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Scroll indicator */}
