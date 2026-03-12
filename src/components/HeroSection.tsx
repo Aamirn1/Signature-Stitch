@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
+import heroBannerMobile from "@/assets/hero-banner-mobile.png";
 import { Button } from "@/components/ui/button";
 
 const line1 = "Where Tradition Meets";
