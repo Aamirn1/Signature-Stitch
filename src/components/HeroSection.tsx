@@ -98,7 +98,7 @@ const HeroSection = () => {
                 <Link to="/shop">Shop Now</Link>
               </Button>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 md:flex-none">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="md:flex-none">
               <Button asChild size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-xs sm:text-sm px-6 sm:px-8 py-5 sm:py-6 hover:bg-primary hover:text-primary-foreground transition-all w-full md:w-auto">
                 <a href="#collections">View Collections</a>
               </Button>
