@@ -25,7 +25,7 @@ const OrderTrackingSteps = ({ currentStep = 0, orderDate, isDelivered = false }:
     : null;
 
   return (
-    <div className="w-full pl-2">
+    <div className="w-full pl-6">
       {/* Steps */}
       <div className="relative flex flex-col gap-0">
         {steps.map((step, i) => {

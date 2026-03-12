@@ -51,7 +51,7 @@ const Navbar = () => {
         }`}
       >
         <div className="max-w-7xl mx-auto section-padding flex items-center justify-between h-16 lg:h-20">
-          <div>
+          <div className="ml-1 sm:ml-0">
             <Logo size="md" />
           </div>
 

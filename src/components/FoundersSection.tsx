@@ -22,8 +22,9 @@ const FoundersSection = () => {
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold">
             Meet the <span className="text-foreground">Founders</span>
           </h2>
-          <p className="text-muted-foreground font-body mt-4 max-w-xl mx-auto text-sm">
-            Built with passion and a commitment to redefining Pakistani fashion — delivering quality you can see and feel.
+          <p className="text-muted-foreground font-body mt-4 max-w-xl mx-auto text-sm px-4 sm:px-0">
+            Built with passion and a commitment to redefining
+            Pakistani fashion — delivering quality you can see and feel.
           </p>
         </motion.div>
 

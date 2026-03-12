@@ -119,7 +119,7 @@ const Category = () => {
                 onClick={() => { setCatDropdownOpen(!catDropdownOpen); setPriceDropdownOpen(false); }}
                 className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-xs font-body tracking-wider uppercase border border-border text-foreground bg-secondary"
               >
-                <span>{category ? category.title : "All Categories"}</span>
+                <span className="truncate">{category ? category.title : "All Categories"}</span>
                 <ChevronDown size={14} className={`transition-transform ${catDropdownOpen ? "rotate-180" : ""}`} />
               </button>
               {catDropdownOpen && (
@@ -140,7 +140,7 @@ const Category = () => {
                       key={cat.slug}
                       to={`/category/${cat.slug}`}
                       onClick={() => setCatDropdownOpen(false)}
-                      className={`block px-4 py-3 text-xs font-body tracking-wider uppercase border-t border-border ${slug === cat.slug ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"}`}
+                      className={`block px-4 py-3 text-xs font-body tracking-wider uppercase border-t border-border whitespace-nowrap ${slug === cat.slug ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"}`}
                     >
                       {cat.title}
                     </Link>
