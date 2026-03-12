@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
+import heroBannerMobile from "@/assets/hero-banner-mobile.png";
 import { Button } from "@/components/ui/button";
 
 const line1 = "Where Tradition Meets";
@@ -21,14 +22,15 @@ const HeroSection = () => {
         />
         <div className="absolute inset-0 bg-overlay-dark" />
       </div>
-      {/* Background - Mobile (CSS gradient to match reference) */}
+      {/* Background - Mobile */}
       <div className="absolute inset-0 md:hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(30,20%,12%)] via-[hsl(20,10%,8%)] to-[hsl(0,0%,5%)]" />
-        {/* Golden fabric drape accent - top right */}
-        <div className="absolute top-0 right-0 w-3/4 h-1/3 bg-gradient-to-bl from-[hsl(40,60%,30%)/0.4] via-[hsl(38,50%,20%)/0.15] to-transparent" />
-        {/* Subtle gold shimmer overlay */}
-        <div className="absolute top-0 left-1/3 w-1/2 h-1/4 bg-gradient-to-b from-[hsl(45,80%,50%)/0.08] to-transparent blur-2xl" />
-        <div className="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-[hsl(0,0%,3%)] to-transparent" />
+        <img
+          src={heroBannerMobile}
+          alt="Signature Stitch Premium Pakistani Clothing"
+          className="w-full h-full object-cover"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(0,0%,0%)/0.3] via-[hsl(0,0%,0%)/0.4] to-[hsl(0,0%,0%)/0.7]" />
       </div>
 
       {/* Content */}
@@ -96,7 +98,7 @@ const HeroSection = () => {
                 <Link to="/shop">Shop Now</Link>
               </Button>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1 md:flex-none">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="md:flex-none">
               <Button asChild size="lg" variant="outline" className="border-primary text-primary font-body tracking-widest uppercase text-xs sm:text-sm px-6 sm:px-8 py-5 sm:py-6 hover:bg-primary hover:text-primary-foreground transition-all w-full md:w-auto">
                 <a href="#collections">View Collections</a>
               </Button>

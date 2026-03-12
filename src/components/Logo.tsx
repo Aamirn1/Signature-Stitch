@@ -8,7 +8,7 @@ interface LogoProps {
 const Logo = ({ className = "", size = "md" }: LogoProps) => {
   const sizeClasses = {
     sm: "text-lg",
-    md: "text-xl lg:text-2xl",
+    md: "text-lg sm:text-xl lg:text-2xl whitespace-nowrap",
     lg: "text-2xl lg:text-3xl",
   };
 
