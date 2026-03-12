@@ -21,14 +21,15 @@ const HeroSection = () => {
         />
         <div className="absolute inset-0 bg-overlay-dark" />
       </div>
-      {/* Background - Mobile (CSS gradient to match reference) */}
+      {/* Background - Mobile */}
       <div className="absolute inset-0 md:hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(30,20%,12%)] via-[hsl(20,10%,8%)] to-[hsl(0,0%,5%)]" />
-        {/* Golden fabric drape accent - top right */}
-        <div className="absolute top-0 right-0 w-3/4 h-1/3 bg-gradient-to-bl from-[hsl(40,60%,30%)/0.4] via-[hsl(38,50%,20%)/0.15] to-transparent" />
-        {/* Subtle gold shimmer overlay */}
-        <div className="absolute top-0 left-1/3 w-1/2 h-1/4 bg-gradient-to-b from-[hsl(45,80%,50%)/0.08] to-transparent blur-2xl" />
-        <div className="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-[hsl(0,0%,3%)] to-transparent" />
+        <img
+          src={heroBannerMobile}
+          alt="Signature Stitch Premium Pakistani Clothing"
+          className="w-full h-full object-cover"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(0,0%,0%)/0.3] via-[hsl(0,0%,0%)/0.4] to-[hsl(0,0%,0%)/0.7]" />
       </div>
 
       {/* Content */}
