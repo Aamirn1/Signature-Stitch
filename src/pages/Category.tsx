@@ -119,7 +119,7 @@ const Category = () => {
                 onClick={() => { setCatDropdownOpen(!catDropdownOpen); setPriceDropdownOpen(false); }}
                 className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-xs font-body tracking-wider uppercase border border-border text-foreground bg-secondary"
               >
-                <span>{category ? category.title : "All Categories"}</span>
+                <span className="truncate">{category ? category.title : "All Categories"}</span>
                 <ChevronDown size={14} className={`transition-transform ${catDropdownOpen ? "rotate-180" : ""}`} />
               </button>
               {catDropdownOpen && (
