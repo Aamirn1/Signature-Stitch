@@ -11,7 +11,7 @@ const startDelay = 0.5;
 const HeroSection = () => {
 
   return (
-    <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden ambient-glow">
+    <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
       {/* Background Image - Desktop */}
       <div className="absolute inset-0 hidden md:block">
         <img

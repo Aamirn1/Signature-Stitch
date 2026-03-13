@@ -9,7 +9,7 @@ const founders = [
 
 const FoundersSection = () => {
   return (
-    <section id="founders" className="py-20 lg:py-28 section-padding bg-founders-gradient ambient-glow">
+    <section id="founders" className="py-20 lg:py-28 section-padding bg-founders-gradient">
       <div className="max-w-5xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 60 }}
