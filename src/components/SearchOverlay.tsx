@@ -57,11 +57,11 @@ const SearchOverlay = ({ isOpen, onClose }: SearchOverlayProps) => {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search products, categories"
-                  className="flex-1 min-w-0 bg-transparent text-foreground font-body text-base placeholder:text-muted-foreground focus:outline-none pr-6"
+                  className="flex-1 min-w-0 bg-transparent text-foreground font-body text-base placeholder:text-muted-foreground focus:outline-none pr-10"
                 />
                 <button
                   onClick={onClose}
-                  className="text-muted-foreground hover:text-foreground transition-colors p-1 shrink-0"
+                  className="absolute right-4 text-muted-foreground hover:text-foreground transition-colors p-1"
                   aria-label="Close search"
                 >
                   <X size={18} />
