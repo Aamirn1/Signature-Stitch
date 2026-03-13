@@ -278,16 +278,16 @@ const Profile = () => {
 
         {/* Measurements Section */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
             <div className="flex items-center gap-2">
               <Ruler size={20} className="text-primary" />
-              <h2 className="font-heading text-xl font-semibold">My Measurements</h2>
+              <h2 className="font-heading text-xl font-semibold whitespace-nowrap">My Measurements</h2>
             </div>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setEditingMeasurement({ ...emptyMeasurement })}
-              className="gap-2 font-body text-xs border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              className="gap-2 font-body text-xs border-primary text-primary hover:bg-primary hover:text-primary-foreground w-fit"
             >
               <Plus size={14} /> Add Measurements
             </Button>
@@ -446,7 +446,7 @@ const Profile = () => {
                 <Button onClick={saveMeasurement} disabled={saving} className="bg-gold-gradient text-primary-foreground font-body tracking-wider uppercase text-xs hover:opacity-90 gap-2">
                   <Check size={14} /> {saving ? "Saving..." : "Save Measurements"}
                 </Button>
-                <Button variant="outline" onClick={() => setEditingMeasurement(null)} className="font-body text-xs">
+                <Button variant="outline" onClick={() => setEditingMeasurement(null)} className="font-body text-xs ml-1">
                   Cancel
                 </Button>
               </div>

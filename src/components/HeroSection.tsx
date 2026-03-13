@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
-import heroBannerMobile from "@/assets/hero-banner-mobile.png";
+import heroBannerMobile from "@/assets/hero-mobile-v2.jpg";
 import { Button } from "@/components/ui/button";
 
 const line1 = "Where Tradition Meets";
@@ -27,10 +27,10 @@ const HeroSection = () => {
         <img
           src={heroBannerMobile}
           alt="Signature Stitch Premium Pakistani Clothing"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-[center_top]"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(0,0%,0%)/0.3] via-[hsl(0,0%,0%)/0.4] to-[hsl(0,0%,0%)/0.7]" />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
       {/* Content */}
