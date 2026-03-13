@@ -56,7 +56,7 @@ const SearchOverlay = ({ isOpen, onClose }: SearchOverlayProps) => {
                   ref={inputRef}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search products, categories"
+                  placeholder="Search products or categories"
                   className="flex-1 min-w-0 bg-transparent text-foreground font-body text-base placeholder:text-muted-foreground focus:outline-none pr-10"
                 />
                 <button
