@@ -260,6 +260,43 @@ const Profile = () => {
           </Button>
         </motion.div>
 
+        {/* Account Security */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="bg-card border border-border rounded-xl p-6 mb-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+              <Check size={18} className="text-primary" />
+            </div>
+            <div>
+              <h2 className="font-heading text-lg font-semibold">Account Security</h2>
+              <p className="text-xs text-muted-foreground font-body">Manage your password and authentication</p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-secondary/50 rounded-lg border border-border/50">
+              <div>
+                <p className="text-sm font-semibold font-heading">Password Authentication</p>
+                <p className="text-xs text-muted-foreground font-body mt-1">
+                  Change your password or set one if you used Google to sign in
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="font-body text-xs border-primary/30 hover:border-primary"
+                onClick={async () => {
+                  const { error } = await supabase.auth.resetPasswordForEmail(user!.email!, {
+                    redirectTo: `${window.location.origin}/auth?mode=reset`,
+                  });
+                  if (error) toast.error(error.message);
+                  else toast.success("Password reset email sent!");
+                }}
+              >
+                Send Reset Email
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+
         {/* My Orders Section */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-8">
           <Link to="/my-orders" className="bg-card border border-border rounded-xl p-6 flex items-center justify-between hover:border-primary/30 transition-colors group block">
