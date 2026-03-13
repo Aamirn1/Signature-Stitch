@@ -50,7 +50,7 @@ const Navbar = () => {
             : "bg-background/90 backdrop-blur-xl border-b border-border"
         }`}
       >
-        <div className="max-w-7xl mx-auto section-padding flex items-center justify-between h-16 lg:h-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 flex items-center justify-between h-16 lg:h-20">
           <div className="ml-0 shrink-0">
             <Logo size="md" />
           </div>
@@ -72,7 +72,7 @@ const Navbar = () => {
             ))}
           </nav>
 
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 sm:gap-5">
             {role === 'admin' && (
               <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                 <Link
